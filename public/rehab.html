@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Smart Sandbag Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Kanit:wght@300;400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3b82f6",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f172a",
+                        "card-dark": "#1e293b",
+                        "border-dark": "#334155"
+                    },
+                    fontFamily: {
+                        display: ["Kanit", "Inter", "sans-serif"],
+                        sans: ["Inter", "Kanit", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', 'Kanit', sans-serif;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-200">
+    <nav class="border-b border-slate-200 dark:border-border-dark bg-white dark:bg-card-dark sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <div class="bg-primary p-1.5 rounded-lg text-white">
+                        <span class="material-icons-outlined block">fitness_center</span>
+                    </div>
+                    <span class="text-xl font-bold font-display tracking-tight text-slate-800 dark:text-white">Smart
+                        Sandbag</span>
+                </div>
+                <div class="flex items-center gap-6">
+                    <button
+                        class="p-2 text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary transition-colors"
+                        id="themeToggle">
+                        <span class="material-icons-outlined block dark:hidden">dark_mode</span>
+                        <span class="material-icons-outlined hidden dark:block">light_mode</span>
+                    </button>
+
+                    <!-- HIDDEN FILE INPUT For Upload -->
+                    <input type="file" id="fileAvatarInput" class="hidden" accept="image/*"
+                        onchange="uploadAvatarFile()">
+
+                    <div
+                        class="flex items-center gap-3 pl-6 border-l border-slate-200 dark:border-border-dark group relative">
+                        <div class="text-right hidden sm:block cursor-pointer" onclick="triggerFileUpload()">
+                            <p id="userNameDisplay" class="text-sm font-medium text-slate-900 dark:text-white">
+                                กำลังโหลด...</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">คลิกเพื่อเปลี่ยนรูป</p>
+                        </div>
+
+                        <div class="relative cursor-pointer" onclick="triggerFileUpload()">
+                            <img id="userAvatarDisplay" alt="Profile"
+                                class="h-9 w-9 rounded-full ring-2 ring-slate-100 dark:ring-border-dark object-cover"
+                                src="https://ui-avatars.com/api/?name=User" />
+                            <div
+                                class="absolute inset-0 bg-black/30 rounded-full opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <span class="material-icons-outlined text-white text-xs">upload</span>
+                            </div>
+                        </div>
+
+                        <button onclick="logout()" class="ml-4 p-2 text-slate-400 hover:text-red-500 transition-colors"
+                            title="ออกจากระบบ">
+                            <span class="material-icons-outlined">logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold font-display text-slate-900 dark:text-white">นวัตกรรมถุงทรายถ่วงน้ำหนัก</h1>
+            <p class="text-slate-500 dark:text-slate-400 mt-1">ระบบติดตามการฝึกซ้อมและวิเคราะห์ผลแบบเรียลไทม์</p>
+        </div>
+
+        <div id="loginWarning"
+            class="hidden mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 rounded-xl border border-yellow-200 dark:border-yellow-900">
+            ⚠ คุณยังไม่ได้เข้าสู่ระบบ ข้อมูลการฝึกจะไม่ถูกบันทึก <button onclick="window.location.href='/index.html'"
+                class="underline font-bold ml-2">เข้าสู่ระบบ</button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Status Card -->
+                <div
+                    class="bg-white dark:bg-card-dark p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-border-dark">
+                    <div class="flex justify-between items-start mb-6">
+                        <h2 class="text-lg font-semibold font-display">สถานะอุปกรณ์</h2>
+                        <span id="statusBadge"
+                            class="flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium transition-colors duration-300">
+                            <span id="statusDot" class="w-2 h-2 rounded-full bg-gray-500"></span>
+                            <span id="statusText">Connecting...</span>
+                        </span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+                            <div class="flex items-center gap-3">
+                                <span class="material-icons-outlined text-primary">timer</span>
+                                <span class="text-slate-600 dark:text-slate-400">เวลาใช้งาน</span>
+                            </div>
+                            <span id="timeDisplay" class="text-xl font-bold font-mono tracking-tight">00:00:00</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+                            <div class="flex items-center gap-3">
+                                <span class="material-icons-outlined text-orange-500">architecture</span>
+                                <span class="text-slate-600 dark:text-slate-400">องศา</span>
+                            </div>
+                            <span id="angleDisplay" class="text-xl font-bold font-mono tracking-tight">0.00°</span>
+                        </div>
+                        <div
+                            class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border-2 border-primary/20">
+                            <div class="flex items-center gap-3">
+                                <span class="material-icons-outlined text-primary">repeat</span>
+                                <span class="text-slate-600 dark:text-slate-400 font-medium">จำนวนครั้ง</span>
+                            </div>
+                            <span id="repDisplay" class="text-3xl font-bold font-mono text-primary">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls Card -->
+                <div
+                    class="bg-white dark:bg-card-dark p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-border-dark">
+                    <h2 class="text-lg font-semibold font-display mb-6">แผงควบคุม</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="start()"
+                            class="flex flex-col items-center justify-center p-4 bg-primary hover:bg-blue-600 text-white rounded-xl transition-all shadow-lg shadow-primary/20 active:scale-95">
+                            <span class="material-icons-outlined mb-1">play_arrow</span>
+                            <span class="font-medium">เริ่ม</span>
+                        </button>
+                        <button onclick="stop()"
+                            class="flex flex-col items-center justify-center p-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl transition-all active:scale-95">
+                            <span class="material-icons-outlined mb-1 text-red-500">stop</span>
+                            <span class="font-medium">หยุด</span>
+                        </button>
+                        <button onclick="reset()"
+                            class="flex flex-col items-center justify-center p-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl transition-all active:scale-95">
+                            <span class="material-icons-outlined mb-1 text-slate-500">refresh</span>
+                            <span class="font-medium">รีเซ็ต</span>
+                        </button>
+                        <button onclick="saveResult()"
+                            class="flex flex-col items-center justify-center p-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl transition-all shadow-lg shadow-emerald-500/20 active:scale-95">
+                            <span class="material-icons-outlined mb-1">save</span>
+                            <span class="font-medium">บันทึกผล</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 space-y-6">
+                <div
+                    class="bg-white dark:bg-card-dark p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-border-dark h-full flex flex-col">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                        <div>
+                            <h2 class="text-xl font-bold font-display">กราฟแสดงผลการฝึก</h2>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">สรุปความถี่การฝึกซ้อมรายวัน</p>
+                        </div>
+                        <div
+                            class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 p-1.5 rounded-lg border border-slate-200 dark:border-border-dark">
+                            <span class="material-icons-outlined text-slate-400 text-sm ml-2">calendar_today</span>
+                            <input id="datePicker" onchange="updateChart()"
+                                class="bg-transparent border-none text-sm font-medium focus:ring-0 text-slate-700 dark:text-slate-200 outline-none"
+                                type="date" />
+                        </div>
+                    </div>
+                    <div class="flex-grow w-full relative h-[300px]">
+                        <canvas id="chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div
+                class="bg-white dark:bg-card-dark p-5 rounded-2xl border border-slate-200 dark:border-border-dark flex items-center gap-4 shadow-sm">
+                <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl text-primary">
+                    <span class="material-icons-outlined">trending_up</span>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">เฉลี่ยต่อนาที</p>
+                    <p id="rpmDisplay" class="text-lg font-bold">0.0 RPM</p>
+                </div>
+            </div>
+            <div
+                class="bg-white dark:bg-card-dark p-5 rounded-2xl border border-slate-200 dark:border-border-dark flex items-center gap-4 shadow-sm">
+                <div class="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-xl text-emerald-500">
+                    <span class="material-icons-outlined">local_fire_department</span>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">เผาผลาญแคลอรี่</p>
+                    <p id="calDisplay" class="text-lg font-bold">0 kcal</p>
+                </div>
+            </div>
+            <div
+                class="bg-white dark:bg-card-dark p-5 rounded-2xl border border-slate-200 dark:border-border-dark flex items-center gap-4 shadow-sm">
+                <div class="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-xl text-purple-500">
+                    <span class="material-icons-outlined">workspace_premium</span>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">สถานะการเชื่อมต่อ</p>
+                    <p id="pingDisplay" class="text-lg font-bold">Online</p>
+                </div>
+            </div>
+            <div
+                class="bg-white dark:bg-card-dark p-5 rounded-2xl border border-slate-200 dark:border-border-dark flex items-center gap-4 shadow-sm">
+                <div class="bg-orange-50 dark:bg-orange-900/20 p-3 rounded-xl text-orange-500">
+                    <span class="material-icons-outlined">bolt</span>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">สถิติสูงสุดวันนี้</p>
+                    <p id="maxRepDisplay" class="text-lg font-bold">0 ครั้ง</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        const themeToggleBtn = document.getElementById('themeToggle');
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        themeToggleBtn.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    </script>
+</body>
+
+</html>

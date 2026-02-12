@@ -1,0 +1,21 @@
+{
+  "name": "rehab-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "express-ws": "^5.0.2",
+    "multer": "^2.0.2",
+    "ws": "^8.19.0"
+  }
+}
