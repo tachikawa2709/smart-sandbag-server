@@ -1,33 +1,38 @@
 <!DOCTYPE html>
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Fitness App Login - Blue Theme</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              colors: {
-                "primary": "#0f172a", // Dark Navy Blue
-                "accent": "#38bdf8",  // Sky Blue
-                "background-light": "#f8fafc",
-                "background-dark": "#020617",
-              },
-              fontFamily: {
-                "display": ["Lexend", "sans-serif"]
-              },
-              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
-            },
+<html class="dark" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Fitness App Login - Blue Theme</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#0f172a", // Dark Navy Blue
+            "accent": "#38bdf8",  // Sky Blue
+            "background-light": "#f8fafc",
+            "background-dark": "#020617",
           },
-        }
-    </script>
-<style type="text/tailwindcss">
-        body {
+          fontFamily: {
+            "display": ["Lexend", "sans-serif"]
+          },
+          borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+        },
+      },
+    }
+  </script>
+  <style type="text/tailwindcss">
+    body {
             font-family: 'Lexend', sans-serif;
         }
         .fitness-gradient {
@@ -38,106 +43,142 @@
         }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
-<div class="flex min-h-screen">
-<div class="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-<div class="absolute inset-0 overlay-gradient z-10"></div>
-<img alt="Athlete training in gym" class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTx-Y1wElYWR0vjDD2xCTH8j3RXupF8qRnEIsbzsJdAP0A2G1dvTXM0tSkA-ZCqooueLOKKp7x4711Ok4gsqWl0ienkS0WQnJki-solLZ09zQLVG708hcsL15_WQFLdGSd20TKIrgU3T0p2n7u3Hlk0OIhpDNsLZkkvBTVhXHrhYYhyPbEA4_vXBqzyWIE1WFGpdWbuZlVqUCGYlCrtBIs18SCUVqt7kKGNhGN1UU_1k6P4kAqu55BxXPk1fh21f1Zpjn49rBtQ2Ct"/>
-<div class="relative z-20 flex flex-col justify-end p-16 h-full w-full">
-<div class="mb-8">
-<div class="w-12 h-1 bg-accent mb-6"></div>
-<h2 class="text-4xl xl:text-5xl font-bold text-white leading-tight uppercase">
-                    Push harder than yesterday if you want a different tomorrow.
-                </h2>
-<p class="mt-4 text-accent font-medium tracking-wide uppercase text-sm">Experience the Revolution</p>
-</div>
-<div class="flex items-center gap-4 text-white/60">
-<div class="flex -space-x-2">
-<img class="w-8 h-8 rounded-full border-2 border-background-dark" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAywv3wbUe-rBKPVfbOEa4NFjG7yOkJ-vDHFVvV5xASSQxzbzSkOnurbBpMbuhUt1IlpeETsKzp5OYVavZIcYOaORoGOHrkCCOXf0BZXv8fEHBpk9kUkSGTkaVUKm7XjKXQbGRECz6OTkj5BEDqXfiwR8FhSt9cdE3UU2wQI0OmLPhl4XN50L3ilODstlokb0cYW5D63u3C76zj9El5hQzjhgmn5fPvb8cKwGFuTFi66hR_izovoebaIbai_uFj8kBtwp8ajWNmRB2f"/>
-<img class="w-8 h-8 rounded-full border-2 border-background-dark" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3xHl-vV2csw2EgId8CaNDCRQH8MNspDVrJeHGyUP-i7TSvz5xm74Pf-IQnaMDR9TmVvIWG-XX7QbvDWwA3iuYEXbk7sstsxxRtQSRgSJ0V04Rku5TrPPHO5yL9zAL9JDT-yjBsyM3u_xj3iYUU3047HqZ1Pt3Xn7uLRm-O4d79eDb1q-BthKO0MeX0vzbvazprXty5a0tYr9dwT3v6VXEC1PYbtz9j-WuILPnu8LY7psiCe_tgLyyV-qVj1jCy-Bzu7bqr4lAZ6hq"/>
-<img class="w-8 h-8 rounded-full border-2 border-background-dark" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP_weeq3yWraTzpQzw5j2HOl0UJ9cSKZL_8sU4gcWhTu0O87xHZQ8wb_fEwP6J-xQhIa0bKgAF6Wxd_Tu4O7LxSIYjnUhb6njrn_O5SaTIsngJ4I6tfNZ_xAVKsPEa5A_5WRugkRw9rqUmM6cow7aSKoWgGqIR4Du3T42xtq8E54T1bwzOysLileDb9O0v7HX3EAbyN3KU91kQ7dQq3Gqg7pr1Lq7qdQeyB0iFaHGM5Kf5gx4ZaWdMvQTQGWYK_aM-FB8X-4e0SLv9"/>
-</div>
-<span class="text-xs">Join 10k+ athletes today</span>
-</div>
-</div>
-</div>
-<div class="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-16 bg-background-light dark:bg-background-dark">
-<div class="w-full max-w-md flex flex-col min-h-[600px] justify-between">
-<div>
-<div class="mb-10 text-center lg:text-left">
-<div class="inline-flex items-center justify-center lg:justify-start gap-2 mb-6">
-<div class="w-10 h-10 fitness-gradient rounded-lg flex items-center justify-center shadow-lg shadow-sky-500/20">
-<span class="material-icons text-white">bolt</span>
-</div>
-<span class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">FITPULSE</span>
-</div>
-<h1 class="text-3xl font-bold mb-2 text-slate-900 dark:text-white">Welcome Back</h1>
-<p class="text-slate-500 dark:text-slate-400">Log in to your account to continue your journey.</p>
-</div>
-<form class="space-y-6" onsubmit="login(event)">
-<div>
-<label class="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300" for="email">Username or Email</label>
-<input 
-  class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 focus:border-accent focus:ring-0 transition-colors outline-none text-slate-900 dark:text-white"
-  id="loginInput"
-  placeholder="Username or Email"
-  type="text"
-/>
-</div>
-<div>
-<div class="flex justify-between items-center mb-2">
-<label class="block text-sm font-medium text-slate-700 dark:text-slate-300" for="password">Password</label>
-<a class="text-xs font-semibold text-accent hover:text-sky-400 transition-all" href="#">Forgot Password?</a>
-</div>
-<input class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 focus:border-accent focus:ring-0 transition-colors outline-none text-slate-900 dark:text-white" id="password" placeholder="••••••••" type="password"/>
-</div>
-<div class="flex items-center">
-<input class="w-4 h-4 rounded border-slate-300 dark:border-slate-700 text-accent focus:ring-accent dark:bg-slate-900" id="remember" type="checkbox"/>
-<label class="ml-2 text-sm text-slate-500 dark:text-slate-400" for="remember">Remember me for 30 days</label>
-</div>
-<button class="w-full py-3.5 bg-primary dark:bg-sky-600 text-white font-bold rounded-lg hover:bg-slate-800 dark:hover:bg-sky-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg" type="submit">
-                        Log In
-                    </button>
-</form>
-<div class="mt-10 text-center">
-<p class="text-sm text-slate-500 dark:text-slate-400">
-                        Don't have an account? 
-                        <a href="/register.html" class="text-primary font-bold hover:underline ml-1">Sign Up</a>
-</p>
-</div>
-</div>
-<div class="mt-12 pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[10px] font-medium text-slate-400 uppercase tracking-widest">
-<a class="hover:text-accent transition-colors" href="#">Privacy Policy</a>
-<a class="hover:text-accent transition-colors" href="#">Terms of Service</a>
-<a class="hover:text-accent transition-colors" href="#">Help Center</a>
-</div>
-</div>
-</div>
-</div>
 
-</body></html>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+  <div class="flex min-h-screen">
+    <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+      <div class="absolute inset-0 overlay-gradient z-10"></div>
+      <img alt="Athlete training in gym" class="absolute inset-0 w-full h-full object-cover"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTx-Y1wElYWR0vjDD2xCTH8j3RXupF8qRnEIsbzsJdAP0A2G1dvTXM0tSkA-ZCqooueLOKKp7x4711Ok4gsqWl0ienkS0WQnJki-solLZ09zQLVG708hcsL15_WQFLdGSd20TKIrgU3T0p2n7u3Hlk0OIhpDNsLZkkvBTVhXHrhYYhyPbEA4_vXBqzyWIE1WFGpdWbuZlVqUCGYlCrtBIs18SCUVqt7kKGNhGN1UU_1k6P4kAqu55BxXPk1fh21f1Zpjn49rBtQ2Ct" />
+      <div class="relative z-20 flex flex-col justify-end p-16 h-full w-full">
+        <div class="mb-8">
+          <div class="w-12 h-1 bg-accent mb-6"></div>
+          <h2 class="text-4xl xl:text-5xl font-bold text-white leading-tight uppercase">
+            Push harder than yesterday if you want a different tomorrow.
+          </h2>
+          <p class="mt-4 text-accent font-medium tracking-wide uppercase text-sm">Experience the Revolution</p>
+        </div>
+        <div class="flex items-center gap-4 text-white/60">
+          <div class="flex -space-x-2">
+            <img class="w-8 h-8 rounded-full border-2 border-background-dark"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAywv3wbUe-rBKPVfbOEa4NFjG7yOkJ-vDHFVvV5xASSQxzbzSkOnurbBpMbuhUt1IlpeETsKzp5OYVavZIcYOaORoGOHrkCCOXf0BZXv8fEHBpk9kUkSGTkaVUKm7XjKXQbGRECz6OTkj5BEDqXfiwR8FhSt9cdE3UU2wQI0OmLPhl4XN50L3ilODstlokb0cYW5D63u3C76zj9El5hQzjhgmn5fPvb8cKwGFuTFi66hR_izovoebaIbai_uFj8kBtwp8ajWNmRB2f" />
+            <img class="w-8 h-8 rounded-full border-2 border-background-dark"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3xHl-vV2csw2EgId8CaNDCRQH8MNspDVrJeHGyUP-i7TSvz5xm74Pf-IQnaMDR9TmVvIWG-XX7QbvDWwA3iuYEXbk7sstsxxRtQSRgSJ0V04Rku5TrPPHO5yL9zAL9JDT-yjBsyM3u_xj3iYUU3047HqZ1Pt3Xn7uLRm-O4d79eDb1q-BthKO0MeX0vzbvazprXty5a0tYr9dwT3v6VXEC1PYbtz9j-WuILPnu8LY7psiCe_tgLyyV-qVj1jCy-Bzu7bqr4lAZ6hq" />
+            <img class="w-8 h-8 rounded-full border-2 border-background-dark"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP_weeq3yWraTzpQzw5j2HOl0UJ9cSKZL_8sU4gcWhTu0O87xHZQ8wb_fEwP6J-xQhIa0bKgAF6Wxd_Tu4O7LxSIYjnUhb6njrn_O5SaTIsngJ4I6tfNZ_xAVKsPEa5A_5WRugkRw9rqUmM6cow7aSKoWgGqIR4Du3T42xtq8E54T1bwzOysLileDb9O0v7HX3EAbyN3KU91kQ7dQq3Gqg7pr1Lq7qdQeyB0iFaHGM5Kf5gx4ZaWdMvQTQGWYK_aM-FB8X-4e0SLv9" />
+          </div>
+          <span class="text-xs">Join 10k+ athletes today</span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-16 bg-background-light dark:bg-background-dark">
+      <div class="w-full max-w-md flex flex-col min-h-[600px] justify-between">
+        <div>
+          <div class="mb-10 text-center lg:text-left">
+            <div class="inline-flex items-center justify-center lg:justify-start gap-2 mb-6">
+              <div
+                class="w-10 h-10 fitness-gradient rounded-lg flex items-center justify-center shadow-lg shadow-sky-500/20">
+                <span class="material-icons text-white">bolt</span>
+              </div>
+              <span class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">FITPULSE</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2 text-slate-900 dark:text-white">Welcome Back</h1>
+            <p class="text-slate-500 dark:text-slate-400">Log in to your account to continue your journey.</p>
+          </div>
+          <form class="space-y-6" onsubmit="login(event)">
+            <div>
+              <label class="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300" for="email">Username or
+                Email</label>
+              <input
+                class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 focus:border-accent focus:ring-0 transition-colors outline-none text-slate-900 dark:text-white"
+                id="loginInput" placeholder="Username or Email" type="text" />
+            </div>
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300"
+                  for="password">Password</label>
+                <a class="text-xs font-semibold text-accent hover:text-sky-400 transition-all" href="#"
+                  onclick="forgotPassword(event)">Forgot Password?</a>
+              </div>
+              <input
+                class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 focus:border-accent focus:ring-0 transition-colors outline-none text-slate-900 dark:text-white"
+                id="password" placeholder="••••••••" type="password" />
+            </div>
+            <div class="flex items-center">
+              <input
+                class="w-4 h-4 rounded border-slate-300 dark:border-slate-700 text-accent focus:ring-accent dark:bg-slate-900"
+                id="remember" type="checkbox" />
+              <label class="ml-2 text-sm text-slate-500 dark:text-slate-400" for="remember">Remember me for 30
+                days</label>
+            </div>
+            <button
+              class="w-full py-3.5 bg-primary dark:bg-sky-600 text-white font-bold rounded-lg hover:bg-slate-800 dark:hover:bg-sky-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg"
+              type="submit">
+              Log In
+            </button>
+          </form>
+          <div class="mt-10 text-center">
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+              Don't have an account?
+              <a href="/register.html" class="text-primary font-bold hover:underline ml-1">Sign Up</a>
+            </p>
+          </div>
+        </div>
+        <div
+          class="mt-12 pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[10px] font-medium text-slate-400 uppercase tracking-widest">
+          <a class="hover:text-accent transition-colors" href="#">Privacy Policy</a>
+          <a class="hover:text-accent transition-colors" href="#">Terms of Service</a>
+          <a class="hover:text-accent transition-colors" href="#">Help Center</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
 
 <script>
-async function login(event) {
-  event.preventDefault();
+  async function login(event) {
+    event.preventDefault();
 
-  const login = document.getElementById('loginInput').value;
-  const password = document.getElementById('password').value;
+    const login = document.getElementById('loginInput').value;
+    const password = document.getElementById('password').value;
 
-  const res = await fetch('/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ login, password })
-  });
+    const res = await fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ login, password })
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  if (data.success) {
-    window.location.href = '/rehab.html';
-  } else {
-    alert(data.message);
+    if (data.success) {
+      window.location.href = '/rehab.html';
+    } else {
+      alert(data.message);
+    }
   }
-}
+
+  async function forgotPassword(event) {
+    if (event) event.preventDefault();
+    const email = prompt("กรุณากรอก Email ที่ใช้ลงทะเบียน:");
+    if (!email) return;
+
+    try {
+      const res = await fetch('/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      alert(data.message);
+    } catch (err) {
+      alert("เกิดข้อผิดพลาดในการเชื่อมต่อ");
+    }
+  }
 </script>
 </body>
+
 </html>

@@ -171,6 +171,24 @@ app.post('/api/user/avatar', (req, res) => {
     }
 });
 
+// API ลืมรหัสผ่าน (Simulation)
+app.post('/forgot-password', (req, res) => {
+    const { email } = req.body;
+    const users = loadUsers();
+    const user = users.find(u => u.email === email);
+
+    if (user) {
+        // ในระบบจริงจะส่ง Email แต่อันนี้เราจะจำลองโดยการตอบกลับรหัสผ่าน
+        // (สำหรับการทดสอบใน Lab เท่านั้น)
+        res.json({
+            success: true,
+            message: `ระบบตรวจสอบพบผู้ใช้! รหัสผ่านของคุณคือ: ${user.password}`
+        });
+    } else {
+        res.status(404).json({ success: false, message: "ไม่พบอีเมลนี้ในระบบ" });
+    }
+});
+
 // ================= API =================
 app.post('/save', (req, res) => {
     if (!req.session.user) return res.status(401).end();
