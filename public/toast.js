@@ -1,17 +1,17 @@
 // Toast System (For minor notifications)
-function showToast(message, type = 'info') {
+function showToast(message, type = 'info', duration = 2000) {
     let container = document.getElementById('toast-container');
     if (!container) {
         container = document.createElement('div');
         container.id = 'toast-container';
         container.style.cssText = `
             position: fixed;
-            top: 24px;
+            bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 10000;
             display: flex;
-            flex-direction: column;
+            flex-direction: column-reverse;
             gap: 12px;
             pointer-events: none;
             width: max-content;
@@ -24,7 +24,7 @@ function showToast(message, type = 'info') {
 
     let icon = 'info';
     let borderColor = '#3b82f6'; // primary
-    let bgColor = 'rgba(15, 23, 42, 0.9)'; // dark navy
+    let bgColor = 'rgba(15, 23, 42, 0.95)'; // dark navy
 
     if (type === 'success') {
         icon = 'check_circle';
@@ -37,7 +37,7 @@ function showToast(message, type = 'info') {
         borderColor = '#f59e0b'; // amber
     }
 
-    toast.className = `flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-md text-white transition-all duration-500 transform translate-y-[-20px] opacity-0 pointer-events-auto`;
+    toast.className = `flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-md text-white transition-all duration-500 transform translate-y-[20px] opacity-0 pointer-events-auto`;
     toast.style.backgroundColor = bgColor;
     toast.style.borderBottom = `4px solid ${borderColor}`;
 
@@ -54,76 +54,62 @@ function showToast(message, type = 'info') {
     });
 
     setTimeout(() => {
-        toast.style.transform = 'translateY(-20px)';
+        toast.style.transform = 'translateY(20px)';
         toast.style.opacity = '0';
         setTimeout(() => toast.remove(), 500);
-    }, 4000);
+    }, duration);
 }
 
 // Result Modal System (For major events like Registration)
-function showResultModal({ title, message, type = 'success', buttonText = 'ตกลง', duration = 0, onAction }) {
-    // Remove existing modal if any
+function showResultModal({ title, message, type = 'success', duration = 2000, onAction }) {
     const existing = document.getElementById('result-modal-overlay');
     if (existing) existing.remove();
 
     const overlay = document.createElement('div');
     overlay.id = 'result-modal-overlay';
-    overlay.className = 'fixed inset-0 z-[10001] flex items-center justify-center p-4 bg-background-dark/80 backdrop-blur-sm transition-opacity duration-300 opacity-0';
+    overlay.className = 'fixed inset-0 z-[10001] flex items-center justify-center p-4 bg-background-dark/90 backdrop-blur-md transition-opacity duration-300 opacity-0';
 
     const isSuccess = type === 'success';
     const accentColor = isSuccess ? '#22c55e' : '#ef4444';
     const iconName = isSuccess ? 'check' : 'close';
     const glowClass = isSuccess ? 'success-glow' : 'error-glow';
 
-    // Add required styles dynamicially if not present
     if (!document.getElementById('modal-extra-styles')) {
         const style = document.createElement('style');
         style.id = 'modal-extra-styles';
         style.innerHTML = `
-            .success-glow { box-shadow: 0 0 30px rgba(34, 197, 94, 0.4); }
-            .error-glow { box-shadow: 0 0 30px rgba(239, 68, 68, 0.4); }
-            @keyframes modal-pop {
-                0% { transform: scale(0.9); opacity: 0; }
-                100% { transform: scale(1); opacity: 1; }
-            }
-            @keyframes progress-linear {
-                0% { width: 100%; }
-                100% { width: 0%; }
+            .success-glow { box-shadow: 0 0 40px rgba(34, 197, 94, 0.5); }
+            .error-glow { box-shadow: 0 0 40px rgba(239, 68, 68, 0.5); }
+            @keyframes modal-pop-in {
+                0% { transform: scale(0.5) translateY(20px); opacity: 0; }
+                100% { transform: scale(1) translateY(0); opacity: 1; }
             }
         `;
         document.head.appendChild(style);
     }
 
     overlay.innerHTML = `
-        <div class="relative w-full max-w-md bg-[#0f172a] border border-white/10 rounded-2xl p-8 md:p-10 text-center shadow-2xl transform transition-transform duration-300 scale-95" style="animation: modal-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards">
-            <!-- Icon -->
+        <div class="relative w-full max-w-sm bg-[#0f172a] border border-white/10 rounded-3xl p-10 text-center shadow-2xl transform transition-all" style="animation: modal-pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards">
+            <!-- Icon Section -->
             <div class="flex justify-center mb-8">
                 <div class="relative">
-                    <div class="size-20 rounded-full border-4 flex items-center justify-center ${glowClass}" style="border-color: ${accentColor}; background-color: ${accentColor}1a">
-                        <span class="material-icons-outlined text-5xl font-bold" style="color: ${accentColor}">${iconName}</span>
+                    <div class="size-24 rounded-full border-4 flex items-center justify-center ${glowClass}" style="border-color: ${accentColor}; background-color: ${accentColor}1a">
+                        <span class="material-icons-outlined text-6xl font-bold" style="color: ${accentColor}">${iconName}</span>
                     </div>
-                    ${isSuccess ? '<div class="absolute -top-2 -right-2 animate-pulse text-green-400"><span class="material-icons-outlined text-xl">auto_awesome</span></div>' : ''}
+                    ${isSuccess ? '<div class="absolute -top-3 -right-3 animate-bounce text-green-400"><span class="material-icons-outlined text-2xl">auto_awesome</span></div>' : ''}
                 </div>
             </div>
-            <!-- Content -->
-            <div class="space-y-3 mb-10">
+            <!-- Text Content -->
+            <div class="space-y-4">
                 <h2 class="text-white text-3xl font-bold tracking-tight">${title}</h2>
-                <p class="text-slate-400 text-base font-normal leading-relaxed">${message}</p>
+                <div class="h-1 w-10 bg-white/20 mx-auto rounded-full"></div>
+                <p class="text-slate-400 text-lg font-medium leading-relaxed">${message}</p>
             </div>
-            <!-- Action -->
-            <button id="modal-action-btn" class="relative overflow-hidden w-full flex cursor-pointer items-center justify-center rounded-xl h-14 px-8 bg-primary text-white text-lg font-bold transition-all hover:brightness-110 active:scale-[0.98] shadow-lg shadow-primary/20">
-                <span class="relative z-10 flex items-center">
-                    <span class="truncate">${buttonText}</span>
-                    <span class="material-icons-outlined ml-2 text-xl">arrow_forward</span>
-                </span>
-                ${duration > 0 ? `<div class="absolute bottom-0 left-0 h-1 bg-white/30" style="animation: progress-linear ${duration}ms linear forwards"></div>` : ''}
-            </button>
         </div>
     `;
 
     document.body.appendChild(overlay);
 
-    // Fade in
     requestAnimationFrame(() => {
         overlay.classList.remove('opacity-0');
         overlay.classList.add('opacity-100');
@@ -132,17 +118,14 @@ function showResultModal({ title, message, type = 'success', buttonText = 'ต�
     const triggerAction = () => {
         if (overlay.dataset.triggered) return;
         overlay.dataset.triggered = "true";
-        overlay.classList.add('opacity-0');
+        overlay.style.opacity = '0';
+        overlay.style.transform = 'scale(0.95)';
         setTimeout(() => {
             overlay.remove();
             if (onAction) onAction();
         }, 300);
     };
 
-    const closeBtn = overlay.querySelector('#modal-action-btn');
-    closeBtn.onclick = triggerAction;
-
-    if (duration > 0) {
-        setTimeout(triggerAction, duration);
-    }
+    // Auto close after duration
+    setTimeout(triggerAction, duration);
 }

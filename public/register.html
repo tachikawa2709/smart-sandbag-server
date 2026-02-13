@@ -189,12 +189,20 @@
         const data = await res.json();
 
         if (data.success) {
-          showToast("สมัครสมาชิกสำเร็จ! กำลังพาคุณไปหน้า Login...", "success");
-          setTimeout(() => {
-            window.location.href = "/index.html";
-          }, 2000);
+          showResultModal({
+            title: "Registration Successful!",
+            message: "Your account has been created. See you at login!",
+            type: "success",
+            duration: 2000,
+            onAction: () => { window.location.href = "/index.html"; }
+          });
         } else {
-          showToast(data.message || "สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่", "error");
+          showResultModal({
+            title: "Registration Failed",
+            message: data.message || "Please check your information.",
+            type: "error",
+            duration: 3000
+          });
         }
       });
   });
