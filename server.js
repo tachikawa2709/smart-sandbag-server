@@ -13,6 +13,7 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const MongoStore = require('connect-mongo');
 
 const app = express();
+app.set('trust proxy', 1); // เชื่อมต่อผ่าน Proxy ของ Render (จำเป็นสำหรับ Secure Cookie)
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
