@@ -157,6 +157,7 @@
 
 </html>
 
+<script src="toast.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
 
@@ -171,7 +172,7 @@
         const confirm = document.getElementById("confirm-password").value;
 
         if (password !== confirm) {
-          alert("รหัสผ่านไม่ตรงกัน");
+          showToast("รหัสผ่านไม่ตรงกัน", "warning");
           return;
         }
 
@@ -188,10 +189,12 @@
         const data = await res.json();
 
         if (data.success) {
-          alert("สมัครสมาชิกสำเร็จ");
-          window.location.href = "/index.html"; // 👈 เด้งไปหน้า login
+          showToast("สมัครสมาชิกสำเร็จ! กำลังพาคุณไปหน้า Login...", "success");
+          setTimeout(() => {
+            window.location.href = "/index.html";
+          }, 2000);
         } else {
-          alert(data.message || "สมัครสมาชิกไม่สำเร็จ");
+          showToast(data.message || "สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่", "error");
         }
       });
   });
