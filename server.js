@@ -10,6 +10,8 @@ const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
+const MongoStore = require('connect-mongo');
+
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
@@ -17,9 +19,14 @@ const wss = new WebSocket.Server({ server });
 const PORT = process.env.PORT || 3000;
 
 // ================= DATABASE CONNECTION =================
+console.log("⏳ Attempting to connect to MongoDB Atlas...");
 mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log("Connected to MongoDB Atlas"))
-    .catch(err => console.error("Could not connect to MongoDB:", err));
+    .then(() => {
+        console.log("✅ Successfully connected to MongoDB Atlas");
+    })
+    .catch(err => {
+        console.error("❌ MongoDB Connection Error:", err.message);
+    });
 
 // ================= MODELS =================
 const UserSchema = new mongoose.Schema({
@@ -45,7 +52,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: process.env.SESSION_SECRET || 'rehab-secret',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI,
+        collectionName: 'sessions',
+        ttl: 14 * 24 * 60 * 60 // 14 days
+    }),
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // true if on HTTPS
+        maxAge: 1000 * 60 * 60 * 24 * 14 // 14 days
+    }
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));
