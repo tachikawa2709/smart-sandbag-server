@@ -1,11 +1,14 @@
+require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
 const WebSocket = require('ws');
-// เพิ่มบรรทัดนี้: เรียกใช้ multer สำหรับอัปโหลดไฟล์
 const multer = require('multer');
+const mongoose = require('mongoose');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 const app = express();
 const server = http.createServer(app);
@@ -13,47 +16,58 @@ const wss = new WebSocket.Server({ server });
 
 const PORT = process.env.PORT || 3000;
 
+// ================= DATABASE CONNECTION =================
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => console.log("Connected to MongoDB Atlas"))
+    .catch(err => console.error("Could not connect to MongoDB:", err));
+
+// ================= MODELS =================
+const UserSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    avatar: { type: String, default: '' }
+});
+const User = mongoose.model('User', UserSchema);
+
+const ResultSchema = new mongoose.Schema({
+    username: { type: String, required: true },
+    rep: { type: Number, required: true },
+    time: { type: Number, required: true }, // duration in seconds
+    date: { type: Date, default: Date.now }
+});
+const Result = mongoose.model('Result', ResultSchema);
+
 // ================= MIDDLEWARE =================
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(session({
-    secret: 'rehab-secret',
+    secret: process.env.SESSION_SECRET || 'rehab-secret',
     resave: false,
     saveUninitialized: false
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ================= DATA FILES =================
-const USERS_FILE = './data/users.json';
-const RESULTS_FILE = './data/results.json';
-const UPLOADS_DIR = './public/uploads'; // โฟลเดอร์สำหรับเก็บรูป
-
-if (!fs.existsSync('./data')) fs.mkdirSync('./data');
-if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, '[]');
-if (!fs.existsSync(RESULTS_FILE)) fs.writeFileSync(RESULTS_FILE, '[]');
-
-// สร้างโฟลเดอร์ uploads ถ้ายังไม่มี
-if (!fs.existsSync(UPLOADS_DIR)) {
-    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+// ================= CLOUDINARY CONFIG =================
+// ใช้ตัวแปรเดียว CLOUDINARY_URL เพื่อประหยัดพื้นที่จำกัดของ Render (ฟรี)
+if (process.env.CLOUDINARY_URL) {
+    cloudinary.config(process.env.CLOUDINARY_URL);
+} else {
+    cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET
+    });
 }
 
-const loadUsers = () => JSON.parse(fs.readFileSync(USERS_FILE));
-const saveUsers = data => fs.writeFileSync(USERS_FILE, JSON.stringify(data, null, 2));
-
-const loadResults = () => JSON.parse(fs.readFileSync(RESULTS_FILE));
-const saveResults = data => fs.writeFileSync(RESULTS_FILE, JSON.stringify(data, null, 2));
-
-// ================= FILE UPLOAD CONFIG =================
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, UPLOADS_DIR);
-    },
-    filename: (req, file, cb) => {
-        // ตั้งชื่อไฟล์เป็น: user-timestamp.extension (ป้องกันชื่อซ้ำ)
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, 'avatar-' + uniqueSuffix + path.extname(file.originalname));
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'rehab-avatars',
+        allowed_formats: ['jpg', 'png', 'jpeg'],
+        transformation: [{ width: 200, height: 200, crop: 'limit' }]
     }
 });
 
@@ -61,7 +75,6 @@ const upload = multer({
     storage: storage,
     limits: { fileSize: 5 * 1024 * 1024 }, // จำกัดขนาด 5MB
     fileFilter: (req, file, cb) => {
-        // รับเฉพาะไฟล์รูปภาพ
         if (file.mimetype.startsWith('image/')) {
             cb(null, true);
         } else {
@@ -71,39 +84,39 @@ const upload = multer({
 });
 
 // ================= AUTH =================
-app.post('/register', (req, res) => {
-    const { username, email, password } = req.body;
-    const users = loadUsers();
+app.post('/register', async (req, res) => {
+    try {
+        const { username, email, password } = req.body;
+        const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+        if (existingUser) {
+            return res.json({ success: false, message: 'Username หรือ Email นี้มีผู้ใช้งานแล้ว' });
+        }
 
-    if (users.find(u => u.username === username)) {
-        return res.json({ success: false, message: 'Username นี้มีแล้ว' });
+        const avatar = `https://ui-avatars.com/api/?name=${username}&background=random`;
+        const newUser = new User({ username, email, password, avatar });
+        await newUser.save();
+        res.json({ success: true, message: 'สมัครสมาชิกสำเร็จ' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'เกิดข้อผิดพลาดในการลงทะเบียน' });
     }
-
-    if (users.find(u => u.email === email)) {
-        return res.json({ success: false, message: 'Email นี้ถูกใช้งานแล้ว' });
-    }
-
-    const avatar = `https://ui-avatars.com/api/?name=${username}&background=random`;
-
-    users.push({ username, email, password, avatar });
-    saveUsers(users);
-    res.json({ success: true, message: 'สมัครสมาชิกสำเร็จ' });
 });
 
-app.post('/login', (req, res) => {
-    const { login, password } = req.body;
-    const users = loadUsers();
+app.post('/login', async (req, res) => {
+    try {
+        const { login, password } = req.body;
+        const user = await User.findOne({
+            $or: [{ username: login }, { email: login }],
+            password: password
+        });
 
-    const user = users.find(u =>
-        (u.username === login || u.email === login) &&
-        u.password === password
-    );
-
-    if (user) {
-        req.session.user = user.username;
-        res.json({ success: true });
-    } else {
-        res.json({ success: false, message: "ข้อมูลไม่ถูกต้อง" });
+        if (user) {
+            req.session.userId = user._id; // เก็บแค่ ID
+            res.json({ success: true });
+        } else {
+            res.json({ success: false, message: "Username หรือ รหัสผ่านไม่ถูกต้อง" });
+        }
+    } catch (err) {
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ" });
     }
 });
 
@@ -114,100 +127,103 @@ app.post('/logout', (req, res) => {
 });
 
 // ================= USER API =================
-app.get('/api/user', (req, res) => {
-    if (!req.session.user) {
+app.get('/api/user', async (req, res) => {
+    if (!req.session.userId) {
         return res.status(401).json({ error: "Not logged in" });
     }
-    const users = loadUsers();
-    const user = users.find(u => u.username === req.session.user);
-    if (user) {
-        res.json({
-            username: user.username,
-            email: user.email,
-            avatar: user.avatar || `https://ui-avatars.com/api/?name=${user.username}&background=random`
-        });
-    } else {
-        res.status(404).json({ error: "User not found" });
+    try {
+        const user = await User.findById(req.session.userId);
+        if (user) {
+            res.json({
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar || `https://ui-avatars.com/api/?name=${user.username}&background=random`
+            });
+        } else {
+            res.status(404).json({ error: "User not found" });
+        }
+    } catch (err) {
+        res.status(500).json({ error: "Server error" });
     }
 });
 
-// API อัปโหลดรูปโปรไฟล์ (แบบไฟล์)
-app.post('/api/user/avatar-upload', upload.single('avatar'), (req, res) => {
-    if (!req.session.user) return res.status(401).json({ error: "Not logged in" });
+// API อัปโหลดรูปโปรไฟล์ (Cloudinary)
+app.post('/api/user/avatar-upload', upload.single('avatar'), async (req, res) => {
+    if (!req.session.userId) return res.status(401).json({ error: "Not logged in" });
     if (!req.file) return res.status(400).json({ error: "กรุณาเลือกไฟล์รูปภาพ" });
 
-    const users = loadUsers();
-    const userIndex = users.findIndex(u => u.username === req.session.user);
-
-    if (userIndex !== -1) {
-        // สร้าง URL สำหรับเรียกดูไฟล์ (เข้าถึงผ่าน /uploads/ชื่อไฟล์)
-        const fileUrl = `/uploads/${req.file.filename}`;
-
-        // ลบรูปเก่าทิ้งได้ถ้าต้องการ (ในที่นี้ขอข้ามไปก่อนเพื่อความง่าย)
-
-        users[userIndex].avatar = fileUrl;
-        saveUsers(users);
-
-        res.json({ success: true, avatar: fileUrl });
-    } else {
-        res.status(404).json({ error: "User not found" });
+    try {
+        // req.file.path จะเป็น URL ของรูปบน Cloudinary โดยตรง
+        const imageUrl = req.file.path;
+        await User.findByIdAndUpdate(req.session.userId, { avatar: imageUrl });
+        res.json({ success: true, avatar: imageUrl });
+    } catch (err) {
+        res.status(500).json({ error: "เกิดข้อผิดพลาดในการอัปโหลด" });
     }
 });
 
-// API อัปโหลดรูปโปรไฟล์ (แบบ URL เดิม - เผื่อไว้)
-app.post('/api/user/avatar', (req, res) => {
-    if (!req.session.user) return res.status(401).json({ error: "Not logged in" });
+// API อัปโหลดรูปโปรไฟล์ (แบบ URL เดิม)
+app.post('/api/user/avatar', async (req, res) => {
+    if (!req.session.userId) return res.status(401).json({ error: "Not logged in" });
     const { avatarUrl } = req.body;
 
-    const users = loadUsers();
-    const userIndex = users.findIndex(u => u.username === req.session.user);
-
-    if (userIndex !== -1) {
-        users[userIndex].avatar = avatarUrl;
-        saveUsers(users);
+    try {
+        await User.findByIdAndUpdate(req.session.userId, { avatar: avatarUrl });
         res.json({ success: true, avatar: avatarUrl });
-    } else {
-        res.status(404).json({ error: "User not found" });
+    } catch (err) {
+        res.status(500).json({ error: "Server error" });
     }
 });
 
-// API ลืมรหัสผ่าน (Simulation)
-app.post('/forgot-password', (req, res) => {
+// API ลืมรหัสผ่าน (MongoDB Simulation)
+app.post('/forgot-password', async (req, res) => {
     const { email } = req.body;
-    const users = loadUsers();
-    const user = users.find(u => u.email === email);
-
-    if (user) {
-        // ในระบบจริงจะส่ง Email แต่อันนี้เราจะจำลองโดยการตอบกลับรหัสผ่าน
-        // (สำหรับการทดสอบใน Lab เท่านั้น)
-        res.json({
-            success: true,
-            message: `ระบบตรวจสอบพบผู้ใช้! รหัสผ่านของคุณคือ: ${user.password}`
-        });
-    } else {
-        res.status(404).json({ success: false, message: "ไม่พบอีเมลนี้ในระบบ" });
+    try {
+        const user = await User.findOne({ email });
+        if (user) {
+            res.json({
+                success: true,
+                message: `ระบบตรวจสอบพบผู้ใช้! รหัสผ่านของคุณคือ: ${user.password}`
+            });
+        } else {
+            res.status(404).json({ success: false, message: "ไม่พบอีเมลนี้ในระบบ" });
+        }
+    } catch (err) {
+        res.status(500).json({ error: "Server error" });
     }
 });
 
 // ================= API =================
-app.post('/save', (req, res) => {
-    if (!req.session.user) return res.status(401).end();
+app.post('/save', async (req, res) => {
+    if (!req.session.userId) return res.status(401).end();
 
-    const results = loadResults();
-    results.push({
-        user: req.session.user,
-        time: req.body.time,
-        rep: req.body.rep,
-        date: new Date().toISOString()
-    });
-    saveResults(results);
-    res.json({ success: true });
+    try {
+        const user = await User.findById(req.session.userId);
+        if (!user) return res.status(404).end();
+
+        const newResult = new Result({
+            username: user.username,
+            time: req.body.time,
+            rep: req.body.rep
+        });
+        await newResult.save();
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: "Server error" });
+    }
 });
 
-app.get('/results', (req, res) => {
-    if (!req.session.user) return res.status(401).end();
-    const results = loadResults().filter(r => r.user === req.session.user);
-    res.json(results);
+app.get('/results', async (req, res) => {
+    if (!req.session.userId) return res.status(401).end();
+    try {
+        const user = await User.findById(req.session.userId);
+        if (!user) return res.status(404).end();
+
+        const results = await Result.find({ username: user.username }).sort({ date: 1 });
+        res.json(results);
+    } catch (err) {
+        res.status(500).json({ error: "Server error" });
+    }
 });
 
 // ================= WEBSOCKET =================
