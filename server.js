@@ -170,11 +170,16 @@ app.post('/api/user/avatar-upload', upload.single('avatar'), async (req, res) =>
     if (!req.file) return res.status(400).json({ error: "กรุณาเลือกไฟล์รูปภาพ" });
 
     try {
-        // req.file.path จะเป็น URL ของรูปบน Cloudinary โดยตรง
+        console.log("📸 Received avatar upload request for user:", req.session.userId);
         const imageUrl = req.file.path;
+        console.log("✅ Image uploaded to Cloudinary:", imageUrl);
+
         await User.findByIdAndUpdate(req.session.userId, { avatar: imageUrl });
+        console.log("💾 Database updated with new avatar URL");
+
         res.json({ success: true, avatar: imageUrl });
     } catch (err) {
+        console.error("❌ Avatar Upload Error:", err);
         res.status(500).json({ error: "เกิดข้อผิดพลาดในการอัปโหลด" });
     }
 });
