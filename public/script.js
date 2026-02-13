@@ -228,14 +228,15 @@ function uploadAvatarFile() {
         })
         .then(data => {
             if (data.success) {
+                alert("อัปโหลดรูปสำเร็จ!");
                 document.getElementById('userAvatarDisplay').src = data.avatar;
             } else {
-                alert("อัปโหลดไม่สำเร็จ: " + data.message);
+                alert("อัปโหลดไม่สำเร็จ: " + (data.message || data.error || "ไม่ทราบสาเหตุ"));
             }
         })
         .catch(err => {
             console.error(err);
-            alert("เกิดข้อผิดพลาดในการอัปโหลด");
+            alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
         });
 }
 

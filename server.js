@@ -160,7 +160,8 @@ app.get('/api/user', async (req, res) => {
             res.status(404).json({ error: "User not found" });
         }
     } catch (err) {
-        res.status(500).json({ error: "Server error" });
+        console.error("❌ API Error:", err);
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์" });
     }
 });
 
@@ -180,7 +181,7 @@ app.post('/api/user/avatar-upload', upload.single('avatar'), async (req, res) =>
         res.json({ success: true, avatar: imageUrl });
     } catch (err) {
         console.error("❌ Avatar Upload Error:", err);
-        res.status(500).json({ error: "เกิดข้อผิดพลาดในการอัปโหลด" });
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการอัปโหลด" });
     }
 });
 
@@ -193,7 +194,8 @@ app.post('/api/user/avatar', async (req, res) => {
         await User.findByIdAndUpdate(req.session.userId, { avatar: avatarUrl });
         res.json({ success: true, avatar: avatarUrl });
     } catch (err) {
-        res.status(500).json({ error: "Server error" });
+        console.error("❌ Forgot Password Error:", err);
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์" });
     }
 });
 
@@ -211,7 +213,8 @@ app.post('/forgot-password', async (req, res) => {
             res.status(404).json({ success: false, message: "ไม่พบอีเมลนี้ในระบบ" });
         }
     } catch (err) {
-        res.status(500).json({ error: "Server error" });
+        console.error("❌ Save Error:", err);
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการบันทึก" });
     }
 });
 
@@ -231,7 +234,8 @@ app.post('/save', async (req, res) => {
         await newResult.save();
         res.json({ success: true });
     } catch (err) {
-        res.status(500).json({ error: "Server error" });
+        console.error("❌ Results Fetch Error:", err);
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการดึงข้อมูล" });
     }
 });
 
@@ -244,7 +248,8 @@ app.get('/results', async (req, res) => {
         const results = await Result.find({ username: user.username }).sort({ date: 1 });
         res.json(results);
     } catch (err) {
-        res.status(500).json({ error: "Server error" });
+        console.error("❌ API Error:", err);
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์" });
     }
 });
 

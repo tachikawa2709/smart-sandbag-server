@@ -157,7 +157,7 @@
     if (data.success) {
       window.location.href = '/rehab.html';
     } else {
-      alert(data.message);
+      alert(data.message || "เข้าสู่ระบบไม่สำเร็จ");
     }
   }
 
