@@ -92,10 +92,11 @@ const upload = multer({
     storage: storage,
     limits: { fileSize: 5 * 1024 * 1024 }, // จำกัดขนาด 5MB
     fileFilter: (req, file, cb) => {
+        console.log("📂 File filter checking file:", file.originalname, "Mimetype:", file.mimetype);
         if (file.mimetype.startsWith('image/')) {
             cb(null, true);
         } else {
-            cb(new Error('รองรับเฉพาะไฟล์รูปภาพเท่านั้น'));
+            cb(new Error('รองรับเฉพาะไฟล์รูปภาพเท่านั้น'), false);
         }
     }
 });
@@ -166,12 +167,28 @@ app.get('/api/user', async (req, res) => {
 });
 
 // API อัปโหลดรูปโปรไฟล์ (Cloudinary)
-app.post('/api/user/avatar-upload', upload.single('avatar'), async (req, res) => {
+app.post('/api/user/avatar-upload', (req, res, next) => {
+    upload.single('avatar')(req, res, function (err) {
+        if (err instanceof multer.MulterError) {
+            console.error("❌ Multer Error:", err.code, err.message);
+            return res.status(400).json({ success: false, message: `Multer error: ${err.message}` });
+        } else if (err) {
+            console.error("❌ Upload Error:", err.message);
+            return res.status(400).json({ success: false, message: err.message });
+        }
+        next();
+    });
+}, async (req, res) => {
     if (!req.session.userId) return res.status(401).json({ error: "Not logged in" });
-    if (!req.file) return res.status(400).json({ error: "กรุณาเลือกไฟล์รูปภาพ" });
+    if (!req.file) {
+        console.log("⚠️ No file in request. req.body:", JSON.stringify(req.body));
+        return res.status(400).json({ error: "กรุณาเลือกไฟล์รูปภาพ" });
+    }
 
     try {
         console.log("📸 Received avatar upload request for user:", req.session.userId);
+        console.log("📄 File info:", JSON.stringify(req.file, null, 2));
+
         const imageUrl = req.file.path;
         console.log("✅ Image uploaded to Cloudinary:", imageUrl);
 
@@ -180,8 +197,8 @@ app.post('/api/user/avatar-upload', upload.single('avatar'), async (req, res) =>
 
         res.json({ success: true, avatar: imageUrl });
     } catch (err) {
-        console.error("❌ Avatar Upload Error:", err);
-        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการอัปโหลด" });
+        console.error("❌ Avatar Content Error:", JSON.stringify(err, Object.getOwnPropertyNames(err), 2));
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการอัปโหลด: " + err.message });
     }
 });
 
@@ -194,8 +211,8 @@ app.post('/api/user/avatar', async (req, res) => {
         await User.findByIdAndUpdate(req.session.userId, { avatar: avatarUrl });
         res.json({ success: true, avatar: avatarUrl });
     } catch (err) {
-        console.error("❌ Forgot Password Error:", err);
-        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์" });
+        console.error("❌ Avatar Update Error:", err);
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการอัปเดตรูปภาพ" });
     }
 });
 
@@ -213,8 +230,8 @@ app.post('/forgot-password', async (req, res) => {
             res.status(404).json({ success: false, message: "ไม่พบอีเมลนี้ในระบบ" });
         }
     } catch (err) {
-        console.error("❌ Save Error:", err);
-        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการบันทึก" });
+        console.error("❌ Forgot Password Error:", err);
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการตรวจสอบอีเมล" });
     }
 });
 
@@ -234,8 +251,8 @@ app.post('/save', async (req, res) => {
         await newResult.save();
         res.json({ success: true });
     } catch (err) {
-        console.error("❌ Results Fetch Error:", err);
-        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการดึงข้อมูล" });
+        console.error("❌ Save Result Error:", err);
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการบันทึกผล" });
     }
 });
 
@@ -248,8 +265,8 @@ app.get('/results', async (req, res) => {
         const results = await Result.find({ username: user.username }).sort({ date: 1 });
         res.json(results);
     } catch (err) {
-        console.error("❌ API Error:", err);
-        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์" });
+        console.error("❌ Results Fetch Error:", err);
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการดึงประวัติ" });
     }
 });
 
