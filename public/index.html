@@ -135,6 +135,7 @@
     </div>
   </div>
 
+  <script src="toast.js"></script>
 </body>
 
 </html>
@@ -157,7 +158,7 @@
     if (data.success) {
       window.location.href = '/rehab.html';
     } else {
-      alert(data.message || "เข้าสู่ระบบไม่สำเร็จ");
+      showToast(data.message || "เข้าสู่ระบบไม่สำเร็จ", "error");
     }
   }
 
@@ -173,9 +174,9 @@
         body: JSON.stringify({ email })
       });
       const data = await res.json();
-      alert(data.message);
+      showToast(data.message, data.success ? "success" : "error");
     } catch (err) {
-      alert("เกิดข้อผิดพลาดในการเชื่อมต่อ");
+      showToast("เกิดข้อผิดพลาดในการเชื่อมต่อ", "error");
     }
   }
 </script>

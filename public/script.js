@@ -190,14 +190,14 @@ function saveResult() {
     })
         .then(res => {
             if (res.status === 401) {
-                alert("กรุณาเข้าสู่ระบบก่อนบันทึกผล");
+                showToast("กรุณาเข้าสู่ระบบก่อนบันทึกผล", "warning");
                 return null;
             }
             return res.json();
         })
         .then(data => {
             if (data) {
-                alert('บันทึกผลเรียบร้อย');
+                showToast('บันทึกผลเรียบร้อย!', "success");
                 updateChart();
             }
         });
@@ -228,15 +228,15 @@ function uploadAvatarFile() {
         })
         .then(data => {
             if (data.success) {
-                alert("อัปโหลดรูปสำเร็จ!");
+                showToast("อัปโหลดรูปสำเร็จ!", "success");
                 document.getElementById('userAvatarDisplay').src = data.avatar;
             } else {
-                alert("อัปโหลดไม่สำเร็จ: " + (data.message || data.error || "ไม่ทราบสาเหตุ"));
+                showToast("อัปโหลดไม่สำเร็จ: " + (data.message || data.error || "ไม่ทราบสาเหตุ"), "error");
             }
         })
         .catch(err => {
             console.error(err);
-            alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
+            showToast("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์", "error");
         });
 }
 
@@ -262,8 +262,8 @@ function logout() {
     if (confirm("ต้องการออกจากระบบใช่หรือไม่?")) {
         fetch('/logout', { method: 'POST' })
             .then(() => {
-                alert("ออกจากระบบแล้ว");
-                window.location.reload();
+                showToast("ออกจากระบบแล้ว", "success");
+                setTimeout(() => window.location.reload(), 1000);
             });
     }
 }
