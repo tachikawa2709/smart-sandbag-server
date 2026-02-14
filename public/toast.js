@@ -128,3 +128,67 @@ function showResultModal({ title, message, type = 'success', duration = 2000, on
     // Auto close after duration
     setTimeout(triggerAction, duration);
 }
+// Confirm Modal System (For actions requiring confirmation like Logout)
+function showConfirmModal({ title, message, confirmText = "Confirm", cancelText = "Cancel", type = 'warning', onConfirm, onCancel }) {
+    const existing = document.getElementById('result-modal-overlay');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'result-modal-overlay';
+    overlay.className = 'fixed inset-0 z-[10001] flex items-center justify-center p-4 bg-background-dark/90 backdrop-blur-md transition-opacity duration-300 opacity-0';
+
+    const accentColor = type === 'warning' ? '#f59e0b' : '#ef4444';
+    const iconName = type === 'warning' ? 'priority_high' : 'logout';
+
+    overlay.innerHTML = `
+        <div class="relative w-full max-w-sm bg-[#0f172a] border border-white/10 rounded-[2.5rem] p-10 text-center shadow-2xl transform transition-all" style="animation: modal-pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards">
+            <!-- Icon Section -->
+            <div class="flex justify-center mb-8">
+                <div class="relative">
+                    <div class="size-24 rounded-full border-4 border-amber-500/50 flex items-center justify-center shadow-[0_0_40px_rgba(245,158,11,0.3)]" style="background-color: #f59e0b1a">
+                        <span class="material-symbols-outlined text-6xl font-bold text-amber-500">${iconName}</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Text Content -->
+            <div class="space-y-4 mb-10">
+                <h2 class="text-white text-3xl font-bold tracking-tight">${title}</h2>
+                <div class="h-1 w-10 bg-white/20 mx-auto rounded-full"></div>
+                <p class="text-slate-400 text-lg font-medium leading-relaxed">${message}</p>
+            </div>
+            <!-- Buttons -->
+            <div class="grid grid-cols-2 gap-4">
+                <button id="modal-cancel-btn" class="py-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-2xl transition-all active:scale-[0.95]">
+                    ${cancelText}
+                </button>
+                <button id="modal-confirm-btn" class="py-4 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-2xl transition-all shadow-lg shadow-amber-500/25 active:scale-[0.95]">
+                    ${confirmText}
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    requestAnimationFrame(() => {
+        overlay.classList.remove('opacity-0');
+        overlay.classList.add('opacity-100');
+    });
+
+    const close = (action) => {
+        overlay.style.opacity = '0';
+        overlay.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            overlay.remove();
+            if (action) action();
+        }, 300);
+    };
+
+    overlay.querySelector('#modal-cancel-btn').onclick = () => close(onCancel);
+    overlay.querySelector('#modal-confirm-btn').onclick = () => close(onConfirm);
+
+    // Also allow closing by clicking overlay outside the content
+    overlay.onclick = (e) => {
+        if (e.target === overlay) close(onCancel);
+    };
+}

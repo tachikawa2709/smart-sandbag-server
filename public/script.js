@@ -306,13 +306,19 @@ function checkLoginStatus() {
 }
 
 function logout() {
-    if (confirm("ต้องการออกจากระบบใช่หรือไม่?")) {
-        fetch('/logout', { method: 'POST' })
-            .then(() => {
-                showToast("ออกจากระบบแล้ว", "success");
-                setTimeout(() => window.location.reload(), 1000);
-            });
-    }
+    showConfirmModal({
+        title: "ออกจากระบบ?",
+        message: "คุณต้องการออกจากระบบใช่หรือไม่? ข้อมูลที่ยังไม่ได้บันทึกอาจสูญหายได้",
+        confirmText: "ออกจากระบบ",
+        cancelText: "ยกเลิก",
+        onConfirm: () => {
+            fetch('/logout', { method: 'POST' })
+                .then(() => {
+                    showToast("ออกจากระบบแล้ว", "success");
+                    setTimeout(() => window.location.reload(), 1000);
+                });
+        }
+    });
 }
 
 // ---------- Chart Logic ----------
