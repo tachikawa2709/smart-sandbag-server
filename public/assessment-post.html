@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>แบบประเมินหลังใช้งาน - Smart Sandbag</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3b82f6",
+                        "background-dark": "#0f172a",
+                        "card-dark": "#1e293b",
+                        "border-dark": "#334155"
+                    },
+                    fontFamily: {
+                        display: ["Kanit", "Inter", "sans-serif"],
+                        sans: ["Inter", "Kanit", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', 'Kanit', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+    <nav
+        class="border-b border-slate-200 dark:border-border-dark bg-white/80 dark:bg-card-dark/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6">
+            <div class="flex h-16 items-center">
+                <a href="rehab.html"
+                    class="flex items-center gap-2 text-slate-500 hover:text-primary transition-colors">
+                    <span class="material-icons-outlined">arrow_back</span>
+                    <span class="font-medium">กลับหน้าหลัก</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-3xl mx-auto px-4 py-12">
+        <div class="text-center mb-10">
+            <div
+                class="inline-flex items-center justify-center p-3 bg-emerald-500/10 rounded-2xl text-emerald-500 mb-4">
+                <span class="material-icons-outlined text-3xl">assignment_turned_in</span>
+            </div>
+            <h1 class="text-3xl font-bold font-display text-slate-900 dark:text-white">แบบประเมินหลังใช้งาน</h1>
+            <p class="text-slate-500 dark:text-slate-400 mt-2">หลังการฝึกซ้อมคุณรู้สึกอย่างไร?
+                ผลการประเมินช่วยในการวางแผนครั้งถัดไป</p>
+        </div>
+
+        <form id="postAssessmentForm" class="space-y-6">
+            <div
+                class="bg-white dark:bg-card-dark p-8 rounded-3xl border border-slate-200 dark:border-border-dark shadow-sm space-y-8">
+                <!-- Question 1 -->
+                <div class="space-y-4">
+                    <label class="block text-lg font-semibold text-slate-800 dark:text-slate-200">1. หลังการฝึกซ้อม
+                        มีความรู้สึกเจ็บปวดลดลงหรือไม่? (0-10)</label>
+                    <div class="grid grid-cols-11 gap-1">
+                        <script>
+                            for (let i = 0; i <= 10; i++) {
+                                document.write(`
+                                    <button type="button" onclick="selectScore('q1', ${i})" id="q1-${i}" 
+                                        class="h-10 border border-slate-200 dark:border-border-dark rounded-lg flex items-center justify-center text-sm font-medium hover:bg-emerald-500/10 hover:border-emerald-500 transition-all q1-btn">
+                                        ${i}
+                                    </button>
+                                `);
+                            }
+                        </script>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="space-y-4">
+                    <label class="block text-lg font-semibold text-slate-800 dark:text-slate-200">2.
+                        ความเหนื่อยล้าหลังจากการฝึกเป็นอย่างไร?</label>
+                    <div class="grid grid-cols-3 gap-4">
+                        <button type="button" onclick="selectScore('q2', 'low')" id="q2-low"
+                            class="p-4 border border-slate-200 dark:border-border-dark rounded-2xl text-center hover:bg-emerald-500/10 transition-all q2-btn">เหนื่อยน้อย</button>
+                        <button type="button" onclick="selectScore('q2', 'med')" id="q2-med"
+                            class="p-4 border border-slate-200 dark:border-border-dark rounded-2xl text-center hover:bg-emerald-500/10 transition-all q2-btn">เหนื่อยปานกลาง</button>
+                        <button type="button" onclick="selectScore('q2', 'high')" id="q2-high"
+                            class="p-4 border border-slate-200 dark:border-border-dark rounded-2xl text-center hover:bg-emerald-500/10 transition-all q2-btn">เหนื่อยมาก</button>
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="space-y-4">
+                    <label class="block text-lg font-semibold text-slate-800 dark:text-slate-200">3.
+                        ข้อเสนอแนะหรือความรู้สึกเพิ่มเติมหลังใช้</label>
+                    <textarea
+                        class="w-full bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-border-dark rounded-2xl p-4 text-slate-700 dark:text-slate-200 focus:ring-emerald-500 focus:border-emerald-500"
+                        rows="4" placeholder="ระบุสิ่งที่ต้องการให้ระบบพัฒนาขึ้น..."></textarea>
+                </div>
+            </div>
+
+            <button type="submit"
+                class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl transition-all shadow-lg shadow-emerald-500/25 active:scale-[0.98]">
+                บันทึกผลหลังใช้งาน
+            </button>
+        </form>
+    </main>
+
+    <script src="toast.js"></script>
+    <script>
+        function selectScore(q, val) {
+            document.querySelectorAll(`.${q}-btn`).forEach(btn => {
+                btn.classList.remove('bg-emerald-500', 'text-white', 'border-emerald-500');
+                btn.classList.add('hover:bg-emerald-500/10');
+            });
+            const selected = document.getElementById(`${q}-${val}`);
+            selected.classList.remove('hover:bg-emerald-500/10');
+            selected.classList.add('bg-emerald-500', 'text-white', 'border-emerald-500');
+        }
+
+        document.getElementById('postAssessmentForm').onsubmit = (e) => {
+            e.preventDefault();
+            showResultModal({
+                title: "ขอบคุณสำหรับการประเมิน",
+                message: "บันทึกผลหลังใช้งานเรียบร้อยแล้ว พักผ่อนให้เพียงพอนะครับ!",
+                type: 'success',
+                duration: 2000,
+                onAction: () => {
+                    window.location.href = 'rehab.html';
+                }
+            });
+        };
+    </script>
+</body>
+
+</html>

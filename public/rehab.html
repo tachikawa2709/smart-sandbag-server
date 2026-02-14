@@ -64,28 +64,56 @@
                     <input type="file" id="fileAvatarInput" class="hidden" accept="image/*"
                         onchange="uploadAvatarFile()">
 
-                    <div
-                        class="flex items-center gap-3 pl-6 border-l border-slate-200 dark:border-border-dark group relative">
-                        <div class="text-right hidden sm:block cursor-pointer" onclick="triggerFileUpload()">
-                            <p id="userNameDisplay" class="text-sm font-medium text-slate-900 dark:text-white">
-                                กำลังโหลด...</p>
-                            <p class="text-xs text-slate-500 dark:text-slate-400">คลิกเพื่อเปลี่ยนรูป</p>
-                        </div>
-
-                        <div class="relative cursor-pointer" onclick="triggerFileUpload()">
-                            <img id="userAvatarDisplay" alt="Profile"
-                                class="h-9 w-9 rounded-full ring-2 ring-slate-100 dark:ring-border-dark object-cover"
-                                src="https://ui-avatars.com/api/?name=User" />
-                            <div
-                                class="absolute inset-0 bg-black/30 rounded-full opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span class="material-icons-outlined text-white text-xs">upload</span>
+                    <div class="relative group">
+                        <div
+                            class="flex items-center gap-3 pl-6 border-l border-slate-200 dark:border-border-dark cursor-pointer py-1">
+                            <div class="text-right hidden sm:block">
+                                <p id="userNameDisplay" class="text-sm font-medium text-slate-900 dark:text-white">
+                                    กำลังโหลด...</p>
+                                <p class="text-[10px] text-primary font-medium tracking-wider uppercase">Member Profile
+                                </p>
+                            </div>
+                            <div class="relative">
+                                <img id="userAvatarDisplay" alt="Profile"
+                                    class="h-10 w-10 rounded-full ring-2 ring-primary/20 dark:ring-primary/40 object-cover transition-transform group-hover:scale-105"
+                                    src="https://ui-avatars.com/api/?name=User" />
+                                <div
+                                    class="absolute -bottom-0.5 -right-0.5 size-3.5 bg-green-500 border-2 border-white dark:border-card-dark rounded-full">
+                                </div>
                             </div>
                         </div>
 
-                        <button onclick="logout()" class="ml-4 p-2 text-slate-400 hover:text-red-500 transition-colors"
-                            title="ออกจากระบบ">
-                            <span class="material-icons-outlined">logout</span>
-                        </button>
+                        <!-- Dropdown Menu -->
+                        <div
+                            class="absolute right-0 mt-1 w-56 origin-top-right bg-white dark:bg-card-dark border border-slate-200 dark:border-border-dark rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[100] overflow-hidden translate-y-2 group-hover:translate-y-0">
+                            <div
+                                class="px-4 py-3 border-b border-slate-100 dark:border-border-dark bg-slate-50/50 dark:bg-slate-800/50">
+                                <p class="text-xs text-slate-500 dark:text-slate-400">จัดการข้อมูลของคุณ</p>
+                            </div>
+                            <div class="p-2 space-y-1">
+                                <a href="assessment-pre.html"
+                                    class="flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-primary/10 hover:text-primary rounded-xl transition-colors">
+                                    <span class="material-icons-outlined text-lg">fact_check</span>
+                                    <span>แบบประเมินก่อนใช้</span>
+                                </a>
+                                <a href="assessment-post.html"
+                                    class="flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-primary/10 hover:text-primary rounded-xl transition-colors">
+                                    <span class="material-icons-outlined text-lg">assignment_turned_in</span>
+                                    <span>แบบประเมินหลังใช้</span>
+                                </a>
+                                <button onclick="triggerFileUpload()"
+                                    class="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-primary/10 hover:text-primary rounded-xl transition-colors">
+                                    <span class="material-icons-outlined text-lg">photo_camera</span>
+                                    <span>เปลี่ยนรูปโปรไฟล์</span>
+                                </button>
+                                <div class="h-px bg-slate-100 dark:border-border-dark my-1"></div>
+                                <button onclick="logout()"
+                                    class="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors">
+                                    <span class="material-icons-outlined text-lg">logout</span>
+                                    <span>ออกจากระบบ</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
