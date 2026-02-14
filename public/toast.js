@@ -1,3 +1,11 @@
+// Ensure font is loaded
+if (!document.querySelector('link[href*="Material+Symbols+Outlined"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200';
+    document.head.appendChild(link);
+}
+
 // Toast System (For minor notifications)
 function showToast(message, type = 'info', duration = 2000) {
     let container = document.getElementById('toast-container');
@@ -165,7 +173,7 @@ function showConfirmModal({ title, message, confirmText = "Confirm", cancelText 
                 <button id="modal-cancel-btn" class="py-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-2xl transition-all active:scale-[0.95]">
                     ${cancelText}
                 </button>
-                <button id="modal-confirm-btn" class="py-4 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-2xl transition-all shadow-lg shadow-amber-500/25 active:scale-[0.95]">
+                <button id="modal-confirm-btn" class="py-4 text-white font-bold rounded-2xl transition-all shadow-lg active:scale-[0.95]" style="background-color: ${accentColor}">
                     ${confirmText}
                 </button>
             </div>
