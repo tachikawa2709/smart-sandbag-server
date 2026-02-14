@@ -34,7 +34,10 @@ const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    avatar: { type: String, default: '' }
+    avatar: { type: String, default: '' },
+    age: { type: Number, default: 0 },
+    gender: { type: String, default: '' },
+    medicalConditions: { type: String, default: '' }
 });
 const User = mongoose.model('User', UserSchema);
 
@@ -115,17 +118,25 @@ const upload = multer({
 // ================= AUTH =================
 app.post('/register', async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password, age, gender } = req.body;
         const existingUser = await User.findOne({ $or: [{ username }, { email }] });
         if (existingUser) {
             return res.json({ success: false, message: 'Username หรือ Email นี้มีผู้ใช้งานแล้ว' });
         }
 
         const avatar = `https://ui-avatars.com/api/?name=${username}&background=random`;
-        const newUser = new User({ username, email, password, avatar });
+        const newUser = new User({
+            username,
+            email,
+            password,
+            avatar,
+            age: parseInt(age) || 0,
+            gender: gender || ''
+        });
         await newUser.save();
         res.json({ success: true, message: 'สมัครสมาชิกสำเร็จ' });
     } catch (err) {
+        console.error("❌ Register Error:", err);
         res.status(500).json({ success: false, message: 'เกิดข้อผิดพลาดในการลงทะเบียน' });
     }
 });
@@ -166,7 +177,11 @@ app.get('/api/user', async (req, res) => {
             res.json({
                 username: user.username,
                 email: user.email,
-                avatar: user.avatar || `https://ui-avatars.com/api/?name=${user.username}&background=random`
+                avatar: user.avatar || `https://ui-avatars.com/api/?name=${user.username}&background=random`,
+                age: user.age || 0,
+                gender: user.gender || '',
+                medicalConditions: user.medicalConditions || '',
+                password: user.password // Required for the show/hide feature within the secure modal
             });
         } else {
             res.status(404).json({ error: "User not found" });
@@ -174,6 +189,41 @@ app.get('/api/user', async (req, res) => {
     } catch (err) {
         console.error("❌ API Error:", err);
         res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์" });
+    }
+});
+
+// API อัปเดตข้อมูลโปรไฟล์ทั้งหมด
+app.post('/api/user/update-profile', async (req, res) => {
+    if (!req.session.userId) return res.status(401).json({ error: "Not logged in" });
+
+    try {
+        const { username, email, password, age, gender, medicalConditions } = req.body;
+
+        // เช็ค username/email ซ้ำ (ยกเว้นของตัวเอง)
+        const duplicate = await User.findOne({
+            $and: [
+                { _id: { $ne: req.session.userId } },
+                { $or: [{ username }, { email }] }
+            ]
+        });
+
+        if (duplicate) {
+            return res.json({ success: false, message: 'Username หรือ Email นี้มีผู้ใช้คนอื่นใช้งานแล้ว' });
+        }
+
+        await User.findByIdAndUpdate(req.session.userId, {
+            username,
+            email,
+            password,
+            age: parseInt(age) || 0,
+            gender,
+            medicalConditions
+        });
+
+        res.json({ success: true, message: "อัปเดตโปรไฟล์สำเร็จ" });
+    } catch (err) {
+        console.error("❌ Update Profile Error:", err);
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการอัปเดตข้อมูล" });
     }
 });
 

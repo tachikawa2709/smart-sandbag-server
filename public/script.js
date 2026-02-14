@@ -252,39 +252,136 @@ function saveResult() {
 
 // ---------- User Profile & File Upload ----------
 
-function triggerFileUpload() {
-    document.getElementById('fileAvatarInput').click();
-}
+// ---------- Profile Management Logic ----------
+function showProfileModal() {
+    const modal = document.getElementById('profileModal');
+    if (!modal) return;
 
-function uploadAvatarFile() {
-    const fileInput = document.getElementById('fileAvatarInput');
-    const file = fileInput.files[0];
+    // Fetch latest user data
+    fetch('/api/user')
+        .then(res => res.json())
+        .then(user => {
+            document.getElementById('profileModalAvatar').src = user.avatar;
+            document.getElementById('profileUsername').value = user.username;
+            document.getElementById('profileEmail').value = user.email;
+            document.getElementById('profileAge').value = user.age || "";
+            document.getElementById('profileGender').value = user.gender || "male";
+            document.getElementById('profileMedical').value = user.medicalConditions || "";
+            document.getElementById('profilePassword').value = user.password || "";
 
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('avatar', file);
-
-    fetch('/api/user/avatar-upload', {
-        method: 'POST',
-        body: formData
-    })
-        .then(res => {
-            if (!res.ok) throw new Error("Upload Failed");
-            return res.json();
-        })
-        .then(data => {
-            if (data.success) {
-                showToast("อัปโหลดรูปสำเร็จ!", "success");
-                document.getElementById('userAvatarDisplay').src = data.avatar;
-            } else {
-                showToast("อัปโหลดไม่สำเร็จ: " + (data.message || data.error || "ไม่ทราบสาเหตุ"), "error");
-            }
+            // Show modal
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('.transform').classList.remove('scale-95');
+                modal.querySelector('.transform').classList.add('scale-100');
+            }, 10);
         })
         .catch(err => {
-            console.error(err);
-            showToast("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์", "error");
+            console.error("Error fetching user data:", err);
+            showToast("ไม่สามารถดึงข้อมูลผู้ใช้ได้", "error");
         });
+}
+
+function closeProfileModal() {
+    const modal = document.getElementById('profileModal');
+    if (!modal) return;
+
+    modal.classList.add('opacity-0');
+    modal.querySelector('.transform').classList.replace('scale-100', 'scale-95');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 300);
+}
+
+function triggerProfileUpload() {
+    document.getElementById('profileFileInput').click();
+}
+
+function previewProfileImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Local preview for better UX
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        document.getElementById('profileModalAvatar').src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function toggleProfilePassword() {
+    const passInput = document.getElementById('profilePassword');
+    const passIcon = document.getElementById('profilePassIcon');
+    if (passInput.type === 'password') {
+        passInput.type = 'text';
+        passIcon.innerText = 'visibility';
+    } else {
+        passInput.type = 'password';
+        passIcon.innerText = 'visibility_off';
+    }
+}
+
+async function saveProfileChanges() {
+    const btn = document.getElementById('saveProfileBtn');
+    const originalContent = btn.innerHTML;
+
+    // UI state: Loading
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-icons animate-spin">refresh</span> กำลังบันทึก...';
+
+    try {
+        const fileInput = document.getElementById('profileFileInput');
+        const file = fileInput.files[0];
+
+        // 1. If there's a new avatar, upload it first
+        let currentAvatar = document.getElementById('profileModalAvatar').src;
+        if (file) {
+            const formData = new FormData();
+            formData.append('avatar', file);
+            const uploadRes = await fetch('/api/user/avatar-upload', { method: 'POST', body: formData });
+            const uploadData = await uploadRes.json();
+            if (uploadData.success) {
+                currentAvatar = uploadData.avatar;
+            } else {
+                throw new Error("อัปโหลดรูปไม่สำเร็จ: " + uploadData.message);
+            }
+        }
+
+        // 2. Update profile information
+        const payload = {
+            username: document.getElementById('profileUsername').value,
+            email: document.getElementById('profileEmail').value,
+            age: document.getElementById('profileAge').value,
+            gender: document.getElementById('profileGender').value,
+            medicalConditions: document.getElementById('profileMedical').value,
+            password: document.getElementById('profilePassword').value
+        };
+
+        const res = await fetch('/api/user/update-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            showToast("อัปเดตโปรไฟล์สำเร็จ!", "success");
+            // Update Dashboard UI
+            document.getElementById('userNameDisplay').innerText = payload.username;
+            document.getElementById('userAvatarDisplay').src = currentAvatar;
+            closeProfileModal();
+        } else {
+            showToast(data.message, "error");
+        }
+
+    } catch (err) {
+        console.error(err);
+        showToast(err.message || "เกิดข้อผิดพลาดในการบันทึก", "error");
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalContent;
+    }
 }
 
 function checkLoginStatus() {
