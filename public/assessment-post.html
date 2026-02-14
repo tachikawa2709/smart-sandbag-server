@@ -10,6 +10,9 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600&display=swap"
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        rel="stylesheet" />
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -36,6 +39,16 @@
 
         .star-btn:hover span {
             transform: scale(1.2);
+        }
+
+        /* Material Symbols Rounded specific setup */
+        .material-symbols-rounded {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .star-active {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;
         }
     </style>
 </head>
@@ -151,6 +164,15 @@
         const ratings = {};
         let currentFatigue = null;
 
+        const ratingLabels = [
+            '',
+            'พึงพอใจน้อยที่สุด',
+            'พึงพอใจน้อย',
+            'พึงพอใจปานกลาง',
+            'พึงพอใจมาก',
+            'พึงพอใจมากที่สุด'
+        ];
+
         const questions = {
             innovation: [
                 { id: 'device_design', text: 'รูปแบบของอุปกรณ์มีความเหมาะสมกับการใช้งาน' },
@@ -173,17 +195,22 @@
                 const container = document.getElementById(`${section}Questions`);
                 questions[section].forEach(q => {
                     const div = document.createElement('div');
-                    div.className = 'space-y-3';
+                    div.className = 'space-y-3 pb-4 border-b border-slate-100 dark:border-border-dark last:border-0';
                     div.innerHTML = `
                         <p class="text-slate-700 dark:text-slate-300 font-medium">${q.text}</p>
-                        <div class="flex items-center gap-2" id="stars-${q.id}">
-                            ${[1, 2, 3, 4, 5].map(i => `
-                                <button type="button" onclick="setRating('${q.id}', ${i})" 
-                                    class="text-slate-300 dark:text-slate-700 hover:text-amber-400 transition-all star-btn" 
-                                    id="star-${q.id}-${i}">
-                                    <span class="material-icons-outlined text-3xl transition-transform">star_border</span>
-                                </button>
-                            `).join('')}
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2" id="stars-${q.id}">
+                                ${[1, 2, 3, 4, 5].map(i => `
+                                    <button type="button" onclick="setRating('${q.id}', ${i})" 
+                                        class="text-slate-200 dark:text-slate-700 hover:text-amber-400 transition-all star-btn" 
+                                        id="star-${q.id}-${i}">
+                                        <span class="material-symbols-rounded text-4xl">star</span>
+                                    </button>
+                                `).join('')}
+                            </div>
+                            <span id="label-${q.id}" class="text-sm font-bold text-amber-500 bg-amber-500/10 px-3 py-1 rounded-full opacity-0 transition-opacity">
+                                -
+                            </span>
                         </div>
                     `;
                     container.appendChild(div);
@@ -193,15 +220,23 @@
 
         function setRating(questionId, value) {
             ratings[questionId] = value;
+
+            // Update Labels
+            const labelEl = document.getElementById(`label-${questionId}`);
+            labelEl.innerText = ratingLabels[value];
+            labelEl.classList.remove('opacity-0');
+            labelEl.classList.add('opacity-100');
+
+            // Update Stars UI
             for (let i = 1; i <= 5; i++) {
                 const starBtn = document.getElementById(`star-${questionId}-${i}`);
                 const icon = starBtn.querySelector('span');
                 if (i <= value) {
-                    icon.innerText = 'star';
-                    icon.className = 'material-icons-outlined text-3xl text-amber-400 transition-transform';
+                    icon.classList.add('star-active', 'text-amber-400');
+                    icon.classList.remove('text-slate-200', 'dark:text-slate-700');
                 } else {
-                    icon.innerText = 'star_border';
-                    icon.className = 'material-icons-outlined text-3xl text-slate-300 dark:text-slate-700 transition-transform';
+                    icon.classList.remove('star-active', 'text-amber-400');
+                    icon.classList.add('text-slate-200', 'dark:text-slate-700');
                 }
             }
         }
@@ -250,8 +285,8 @@
                 const result = await res.json();
                 if (result.success) {
                     showResultModal({
-                        title: "ขอบคุณสำหรับการประเมิน",
-                        message: "บันทึกผลแบบประเมินพึงพอใจเรียบร้อยแล้ว พักผ่อนให้เพียงพอนะครับ!",
+                        title: "Assessment Successful!",
+                        message: "บันทึกผลการประเมินความพึงพอใจเรียบร้อยแล้ว ขอบคุณที่ร่วมพัฒนาด้วยกันครับ!",
                         type: 'success',
                         duration: 2000,
                         onAction: () => {

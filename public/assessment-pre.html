@@ -10,6 +10,8 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600&display=swap"
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
     <script>
         const painConfigs = [
             { label: 'สบายมาก', emoji: '😊', color: '#22c55e', desc: 'ไม่มีอาการปวดเลย สบายดีมาก' },
@@ -219,8 +221,8 @@
                 const result = await res.json();
                 if (result.success) {
                     showResultModal({
-                        title: "บันทึกสำเร็จ",
-                        message: "ส่งแบบประเมินก่อนใช้งานเรียบร้อยแล้ว เตรียมตัวเริ่มฝึกได้เลย!",
+                        title: "Assessment Successful!",
+                        message: "บันทึกผลการประเมินและเตรียมความพร้อมเรียบร้อยแล้ว!",
                         type: 'success',
                         duration: 2000,
                         onAction: () => {
