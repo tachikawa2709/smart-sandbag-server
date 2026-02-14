@@ -49,7 +49,8 @@ const Result = mongoose.model('Result', ResultSchema);
 const AssessmentSchema = new mongoose.Schema({
     username: { type: String, required: true },
     type: { type: String, enum: ['pre', 'post'], required: true },
-    painLevel: { type: Number, required: true },
+    painLevel: { type: Number }, // Optional for post-assessment
+    ratings: { type: Map, of: Number }, // For multi-question ratings
     fatigue: { type: String }, // 'yes'/'no' or 'low'/'med'/'high'
     comment: { type: String },
     date: { type: Date, default: Date.now }
@@ -287,14 +288,15 @@ app.post('/api/assessment', async (req, res) => {
         const user = await User.findById(req.session.userId);
         if (!user) return res.status(404).json({ success: false, message: "ไม่พบข้อมูลผู้ใช้" });
 
-        const { type, painLevel, fatigue, comment } = req.body;
+        const { type, painLevel, fatigue, comment, ratings } = req.body;
 
         const newAssessment = new Assessment({
             username: user.username,
             type,
             painLevel,
             fatigue,
-            comment
+            comment,
+            ratings
         });
 
         await newAssessment.save();

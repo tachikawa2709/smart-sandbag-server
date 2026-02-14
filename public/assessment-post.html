@@ -33,6 +33,10 @@
         body {
             font-family: 'Inter', 'Kanit', sans-serif;
         }
+
+        .star-btn:hover span {
+            transform: scale(1.2);
+        }
     </style>
 </head>
 
@@ -50,100 +54,180 @@
         </div>
     </nav>
 
-    <main class="max-w-3xl mx-auto px-4 py-12">
-        <div class="text-center mb-10">
-            <div
-                class="inline-flex items-center justify-center p-3 bg-emerald-500/10 rounded-2xl text-emerald-500 mb-4">
-                <span class="material-icons-outlined text-3xl">assignment_turned_in</span>
-            </div>
+    <main class="max-w-3xl mx-auto px-4 py-8">
+        <div class="text-center mb-8">
             <h1 class="text-3xl font-bold font-display text-slate-900 dark:text-white">แบบประเมินหลังใช้งาน</h1>
-            <p class="text-slate-500 dark:text-slate-400 mt-2">หลังการฝึกซ้อมคุณรู้สึกอย่างไร?
-                ผลการประเมินช่วยในการวางแผนครั้งถัดไป</p>
+            <p class="text-slate-500 dark:text-slate-400 mt-2">ความคิดเห็นของคุณช่วยให้เราพัฒนานวัตกรรมให้ดียิ่งขึ้น</p>
         </div>
 
-        <form id="postAssessmentForm" class="space-y-6">
+        <form id="postAssessmentForm" class="space-y-8 pb-20">
+            <!-- Section 1: Innovation -->
             <div
-                class="bg-white dark:bg-card-dark p-8 rounded-3xl border border-slate-200 dark:border-border-dark shadow-sm space-y-8">
-                <!-- Question 1 -->
-                <div class="space-y-4">
-                    <label class="block text-lg font-semibold text-slate-800 dark:text-slate-200">1. หลังการฝึกซ้อม
-                        มีความรู้สึกเจ็บปวดลดลงหรือไม่? (0-10)</label>
-                    <div class="grid grid-cols-11 gap-1">
-                        <script>
-                            for (let i = 0; i <= 10; i++) {
-                                document.write(`
-                                    <button type="button" onclick="selectScore('q1', ${i})" id="q1-${i}" 
-                                        class="h-10 border border-slate-200 dark:border-border-dark rounded-lg flex items-center justify-center text-sm font-medium hover:bg-emerald-500/10 hover:border-emerald-500 transition-all q1-btn">
-                                        ${i}
-                                    </button>
-                                `);
-                            }
-                        </script>
+                class="bg-white dark:bg-card-dark p-8 rounded-[2.5rem] border border-slate-200 dark:border-border-dark shadow-sm space-y-6">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="p-2 bg-blue-500/10 rounded-xl text-blue-500">
+                        <span class="material-icons-outlined">psychology</span>
                     </div>
+                    <h2 class="text-xl font-bold text-slate-800 dark:text-white">ความพึงพอใจต่อนวัตกรรม</h2>
                 </div>
 
-                <!-- Question 2 -->
+                <div class="space-y-6">
+                    <div id="innovationQuestions"></div>
+                </div>
+            </div>
+
+            <!-- Section 2: Server -->
+            <div
+                class="bg-white dark:bg-card-dark p-8 rounded-[2.5rem] border border-slate-200 dark:border-border-dark shadow-sm space-y-6">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="p-2 bg-emerald-500/10 rounded-xl text-emerald-500">
+                        <span class="material-icons-outlined">lan</span>
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-800 dark:text-white">ความพึงพอใจต่อเซิร์ฟเวอร์</h2>
+                </div>
+
+                <div class="space-y-6">
+                    <div id="serverQuestions"></div>
+                </div>
+            </div>
+
+            <!-- Section 3: Overall -->
+            <div
+                class="bg-white dark:bg-card-dark p-8 rounded-[2.5rem] border border-slate-200 dark:border-border-dark shadow-sm space-y-6">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="p-2 bg-amber-500/10 rounded-xl text-amber-500">
+                        <span class="material-icons-outlined">stars</span>
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-800 dark:text-white">ความพึงพอใจภาพรวม</h2>
+                </div>
+
+                <div class="space-y-6">
+                    <div id="overallQuestions"></div>
+                </div>
+            </div>
+
+            <!-- Original Questions Container -->
+            <div
+                class="bg-white dark:bg-card-dark p-8 rounded-[2.5rem] border border-slate-200 dark:border-border-dark shadow-sm space-y-8">
+                <!-- Fatigue (Original Q2) -->
                 <div class="space-y-4">
-                    <label class="block text-lg font-semibold text-slate-800 dark:text-slate-200">2.
-                        ความเหนื่อยล้าหลังจากการฝึกเป็นอย่างไร?</label>
+                    <label
+                        class="block text-lg font-semibold text-slate-800 dark:text-white">ความเหนื่อยล้าหลังจากการฝึกเป็นอย่างไร?</label>
                     <div class="grid grid-cols-3 gap-4">
-                        <button type="button" onclick="selectScore('q2', 'low')" id="q2-low"
-                            class="p-4 border border-slate-200 dark:border-border-dark rounded-2xl text-center hover:bg-emerald-500/10 transition-all q2-btn">เหนื่อยน้อย</button>
-                        <button type="button" onclick="selectScore('q2', 'med')" id="q2-med"
-                            class="p-4 border border-slate-200 dark:border-border-dark rounded-2xl text-center hover:bg-emerald-500/10 transition-all q2-btn">เหนื่อยปานกลาง</button>
-                        <button type="button" onclick="selectScore('q2', 'high')" id="q2-high"
-                            class="p-4 border border-slate-200 dark:border-border-dark rounded-2xl text-center hover:bg-emerald-500/10 transition-all q2-btn">เหนื่อยมาก</button>
+                        <button type="button" onclick="selectFatigue('low')" id="fatigue-low"
+                            class="p-4 border-2 border-slate-100 dark:border-border-dark rounded-2xl text-center hover:bg-emerald-500/5 transition-all fatigue-btn bg-slate-50 dark:bg-slate-800/30">เหนื่อยน้อย</button>
+                        <button type="button" onclick="selectFatigue('med')" id="fatigue-med"
+                            class="p-4 border-2 border-slate-100 dark:border-border-dark rounded-2xl text-center hover:bg-emerald-500/5 transition-all fatigue-btn bg-slate-50 dark:bg-slate-800/30">เหนื่อยปานกลาง</button>
+                        <button type="button" onclick="selectFatigue('high')" id="fatigue-high"
+                            class="p-4 border-2 border-slate-100 dark:border-border-dark rounded-2xl text-center hover:bg-emerald-500/5 transition-all fatigue-btn bg-slate-50 dark:bg-slate-800/30">เหนื่อยมาก</button>
                     </div>
                 </div>
 
-                <!-- Question 3 -->
+                <!-- Comment (Original Q3) -->
                 <div class="space-y-4">
-                    <label class="block text-lg font-semibold text-slate-800 dark:text-slate-200">3.
-                        ข้อเสนอแนะหรือความรู้สึกเพิ่มเติมหลังใช้</label>
-                    <textarea
-                        class="w-full bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-border-dark rounded-2xl p-4 text-slate-700 dark:text-slate-200 focus:ring-emerald-500 focus:border-emerald-500"
+                    <label
+                        class="block text-lg font-semibold text-slate-800 dark:text-white">ข้อเสนอแนะหรือความรู้สึกเพิ่มเติมหลังใช้</label>
+                    <textarea id="assessmentComment"
+                        class="w-full bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-border-dark rounded-2xl p-4 text-slate-700 dark:text-slate-200 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
                         rows="4" placeholder="ระบุสิ่งที่ต้องการให้ระบบพัฒนาขึ้น..."></textarea>
                 </div>
             </div>
 
-            <button type="submit"
-                class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl transition-all shadow-lg shadow-emerald-500/25 active:scale-[0.98]">
-                บันทึกผลหลังใช้งาน
-            </button>
+            <div class="grid grid-cols-2 gap-4">
+                <button type="button" onclick="window.location.href='rehab.html'"
+                    class="py-4 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-2xl hover:bg-slate-300 dark:hover:bg-slate-700 transition-all active:scale-[0.98]">
+                    ยกเลิก
+                </button>
+                <button type="submit"
+                    class="py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl transition-all shadow-lg shadow-emerald-500/25 active:scale-[0.98]">
+                    บันทึกผลการประเมิน
+                </button>
+            </div>
         </form>
     </main>
 
     <script src="toast.js"></script>
     <script>
-        let currentPainLevel = null;
+        const ratings = {};
         let currentFatigue = null;
 
-        function selectScore(q, val) {
-            if (q === 'q1') {
-                currentPainLevel = val;
-                document.querySelectorAll(`.q1-btn`).forEach(btn => {
-                    btn.classList.remove('bg-emerald-500', 'text-white', 'border-emerald-500');
-                    btn.classList.add('hover:bg-emerald-500/10');
-                });
-            } else {
-                currentFatigue = val;
-                document.querySelectorAll(`.q2-btn`).forEach(btn => {
-                    btn.classList.remove('bg-emerald-500', 'text-white', 'border-emerald-500');
-                    btn.classList.add('hover:bg-emerald-500/10');
+        const questions = {
+            innovation: [
+                { id: 'device_design', text: 'รูปแบบของอุปกรณ์มีความเหมาะสมกับการใช้งาน' },
+                { id: 'material_strength', text: 'วัสดุมีความแข็งแรง ทนทาน' },
+                { id: 'convenience', text: 'สะดวกต่อการใช้งาน' },
+                { id: 'pain_relief', text: 'บรรเทาอาการปวด' }
+            ],
+            server: [
+                { id: 'server_connection', text: 'การเชื่อมต่อเซิร์ฟเวอร์กับอุปกรณ์โทรศัพท์มือถือได้ง่าย' },
+                { id: 'ease_of_use', text: 'ใช้งานง่าย ไม่ซับซ้อนเข้าใจง่าย' }
+            ],
+            overall: [
+                { id: 'value_for_money', text: 'ความคุ้มค่าเมื่อเทียบกับประโยชน์ที่ได้รับ' },
+                { id: 'total_satisfaction', text: 'ความพึงพอใจต่อนวัตกรรมโดยรวม' }
+            ]
+        };
+
+        function renderAllQuestions() {
+            for (const section in questions) {
+                const container = document.getElementById(`${section}Questions`);
+                questions[section].forEach(q => {
+                    const div = document.createElement('div');
+                    div.className = 'space-y-3';
+                    div.innerHTML = `
+                        <p class="text-slate-700 dark:text-slate-300 font-medium">${q.text}</p>
+                        <div class="flex items-center gap-2" id="stars-${q.id}">
+                            ${[1, 2, 3, 4, 5].map(i => `
+                                <button type="button" onclick="setRating('${q.id}', ${i})" 
+                                    class="text-slate-300 dark:text-slate-700 hover:text-amber-400 transition-all star-btn" 
+                                    id="star-${q.id}-${i}">
+                                    <span class="material-icons-outlined text-3xl transition-transform">star_border</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                    `;
+                    container.appendChild(div);
                 });
             }
-            const selected = document.getElementById(`${q}-${val}`);
-            selected.classList.remove('hover:bg-emerald-500/10');
-            selected.classList.add('bg-emerald-500', 'text-white', 'border-emerald-500');
+        }
+
+        function setRating(questionId, value) {
+            ratings[questionId] = value;
+            for (let i = 1; i <= 5; i++) {
+                const starBtn = document.getElementById(`star-${questionId}-${i}`);
+                const icon = starBtn.querySelector('span');
+                if (i <= value) {
+                    icon.innerText = 'star';
+                    icon.className = 'material-icons-outlined text-3xl text-amber-400 transition-transform';
+                } else {
+                    icon.innerText = 'star_border';
+                    icon.className = 'material-icons-outlined text-3xl text-slate-300 dark:text-slate-700 transition-transform';
+                }
+            }
+        }
+
+        function selectFatigue(val) {
+            currentFatigue = val;
+            document.querySelectorAll('.fatigue-btn').forEach(btn => {
+                btn.classList.remove('border-emerald-500', 'bg-emerald-500/10', 'text-emerald-500', 'font-bold');
+                btn.classList.add('border-slate-100', 'dark:border-border-dark', 'bg-slate-50', 'dark:bg-slate-800/30');
+            });
+            const selected = document.getElementById(`fatigue-${val}`);
+            selected.classList.remove('border-slate-100', 'dark:border-border-dark', 'bg-slate-50', 'dark:bg-slate-800/30');
+            selected.classList.add('border-emerald-500', 'bg-emerald-500/10', 'text-emerald-500', 'font-bold');
         }
 
         document.getElementById('postAssessmentForm').onsubmit = async (e) => {
             e.preventDefault();
 
-            if (currentPainLevel === null) {
-                showToast("กรุณาเลือกระดับความเจ็บปวด", "warning");
-                return;
+            const allQuestionIds = [...questions.innovation, ...questions.server, ...questions.overall].map(q => q.id);
+            for (const id of allQuestionIds) {
+                if (!ratings[id]) {
+                    showToast("กรุณาให้คะแนนดาวให้ครบทุกหัวข้อ", "warning");
+                    return;
+                }
             }
+
             if (currentFatigue === null) {
                 showToast("กรุณาเลือกอาการเหนื่อยล้า", "warning");
                 return;
@@ -151,9 +235,9 @@
 
             const data = {
                 type: 'post',
-                painLevel: currentPainLevel,
+                ratings: ratings,
                 fatigue: currentFatigue,
-                comment: document.querySelector('textarea').value
+                comment: document.getElementById('assessmentComment').value
             };
 
             try {
@@ -167,7 +251,7 @@
                 if (result.success) {
                     showResultModal({
                         title: "ขอบคุณสำหรับการประเมิน",
-                        message: "บันทึกผลหลังใช้งานเรียบร้อยแล้ว พักผ่อนให้เพียงพอนะครับ!",
+                        message: "บันทึกผลแบบประเมินพึงพอใจเรียบร้อยแล้ว พักผ่อนให้เพียงพอนะครับ!",
                         type: 'success',
                         duration: 2000,
                         onAction: () => {
@@ -182,6 +266,8 @@
                 showToast("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error");
             }
         };
+
+        renderAllQuestions();
     </script>
 </body>
 
