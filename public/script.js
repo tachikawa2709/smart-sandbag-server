@@ -311,6 +311,7 @@ function logout() {
         message: "คุณต้องการออกจากระบบใช่หรือไม่? ข้อมูลที่ยังไม่ได้บันทึกอาจสูญหายได้",
         confirmText: "ออกจากระบบ",
         cancelText: "ยกเลิก",
+        type: 'logout',
         onConfirm: () => {
             fetch('/logout', { method: 'POST' })
                 .then(() => {
@@ -429,9 +430,13 @@ function updateChart() {
 
 // ---------- UI Update Main ----------
 function updateUI() {
-    document.getElementById('timeDisplay').innerText = formatTime(elapsedTime);
-    document.getElementById('angleDisplay').innerText = angle.toFixed(2) + "°";
-    document.getElementById('repDisplay').innerText = rep;
+    const timeEl = document.getElementById('timeDisplay');
+    const angleEl = document.getElementById('angleDisplay');
+    const repEl = document.getElementById('repDisplay');
+
+    if (timeEl) timeEl.innerText = formatTime(elapsedTime);
+    if (angleEl) angleEl.innerText = angle.toFixed(2) + "°";
+    if (repEl) repEl.innerText = rep;
 
     calculateStats();
 }

@@ -137,16 +137,20 @@ function showConfirmModal({ title, message, confirmText = "Confirm", cancelText 
     overlay.id = 'result-modal-overlay';
     overlay.className = 'fixed inset-0 z-[10001] flex items-center justify-center p-4 bg-background-dark/90 backdrop-blur-md transition-opacity duration-300 opacity-0';
 
-    const accentColor = type === 'warning' ? '#f59e0b' : '#ef4444';
-    const iconName = type === 'warning' ? 'priority_high' : 'logout';
+    const accentColor = type === 'logout' ? '#f43f5e' : (type === 'warning' ? '#f59e0b' : '#ef4444');
+    const iconName = type === 'logout' ? 'logout' : (type === 'warning' ? 'priority_high' : 'logout');
+    const bgOpacity = type === 'logout' ? 'bg-rose-500/10' : 'bg-amber-500/10';
+    const textColor = type === 'logout' ? 'text-rose-500' : 'text-amber-500';
+    const borderColor = type === 'logout' ? 'border-rose-500/50' : 'border-amber-500/50';
+    const shadowColor = type === 'logout' ? 'shadow-[0_0_40px_rgba(244,63,94,0.3)]' : 'shadow-[0_0_40px_rgba(245,158,11,0.3)]';
 
     overlay.innerHTML = `
         <div class="relative w-full max-w-sm bg-[#0f172a] border border-white/10 rounded-[2.5rem] p-10 text-center shadow-2xl transform transition-all" style="animation: modal-pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards">
             <!-- Icon Section -->
             <div class="flex justify-center mb-8">
                 <div class="relative">
-                    <div class="size-24 rounded-full border-4 border-amber-500/50 flex items-center justify-center shadow-[0_0_40px_rgba(245,158,11,0.3)]" style="background-color: #f59e0b1a">
-                        <span class="material-symbols-outlined text-6xl font-bold text-amber-500">${iconName}</span>
+                    <div class="size-24 rounded-full border-4 ${borderColor} flex items-center justify-center ${shadowColor}" style="background-color: ${accentColor}1a">
+                        <span class="material-symbols-outlined text-6xl font-bold ${textColor}">${iconName}</span>
                     </div>
                 </div>
             </div>
