@@ -128,17 +128,6 @@
 
             <div
                 class="bg-white dark:bg-card-dark p-8 rounded-[2.5rem] border border-slate-200 dark:border-border-dark shadow-sm space-y-6">
-                <!-- Fatigue Question -->
-                <div class="space-y-4">
-                    <label
-                        class="block text-lg font-semibold text-slate-800 dark:text-white">คุณรู้สึกล้าหรือตึงที่กล้ามเนื้อหรือไม่?</label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button type="button" onclick="selectFatigue('yes')" id="fatigue-yes"
-                            class="p-4 border-2 border-slate-100 dark:border-border-dark rounded-2xl text-center hover:bg-primary/5 transition-all fatigue-btn bg-slate-50 dark:bg-slate-800/30">รู้สึกมาก</button>
-                        <button type="button" onclick="selectFatigue('no')" id="fatigue-no"
-                            class="p-4 border-2 border-slate-100 dark:border-border-dark rounded-2xl text-center hover:bg-primary/5 transition-all fatigue-btn bg-slate-50 dark:bg-slate-800/30">ไม่ค่อยรู้สึก</button>
-                    </div>
-                </div>
 
                 <!-- Comment -->
                 <div class="space-y-4">
@@ -166,7 +155,6 @@
     <script src="toast.js"></script>
     <script>
         let currentPainLevel = 0;
-        let currentFatigue = null;
 
         function updatePainLevel(level) {
             currentPainLevel = level;
@@ -188,21 +176,18 @@
                 }
             });
 
-            // Update Emoji & Info with Animation
+            // Update Emoji & Info with Animation (Pop Effect)
             const emojiEl = document.getElementById('painEmoji');
             emojiEl.innerText = config.emoji;
-            emojiEl.style.transform = 'scale(0.5)';
 
-            setTimeout(() => {
-                emojiEl.style.transform = 'scale(1.2)';
-                setTimeout(() => emojiEl.style.transform = 'scale(1)', 150);
-            }, 10);
+            // Pop effect
+            emojiEl.style.transition = 'none';
+            emojiEl.style.transform = 'scale(0.3)';
 
-            // Shaking if high pain
-            if (level >= 7) {
-                emojiEl.classList.add('animate-bounce');
-                setTimeout(() => emojiEl.classList.remove('animate-bounce'), 1000);
-            }
+            requestAnimationFrame(() => {
+                emojiEl.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                emojiEl.style.transform = 'scale(1)';
+            });
 
             document.getElementById('levelDisplay').innerText = level;
             document.getElementById('statusDisplay').innerText = config.label;
@@ -210,16 +195,6 @@
             document.getElementById('descDisplay').innerText = config.desc;
         }
 
-        function selectFatigue(val) {
-            currentFatigue = val;
-            document.querySelectorAll('.fatigue-btn').forEach(btn => {
-                btn.classList.remove('border-primary', 'bg-primary/10', 'text-primary', 'font-bold');
-                btn.classList.add('border-slate-100', 'dark:border-border-dark', 'bg-slate-50', 'dark:bg-slate-800/30');
-            });
-            const selected = document.getElementById(`fatigue-${val}`);
-            selected.classList.remove('border-slate-100', 'dark:border-border-dark', 'bg-slate-50', 'dark:bg-slate-800/30');
-            selected.classList.add('border-primary', 'bg-primary/10', 'text-primary', 'font-bold');
-        }
 
         // Initialize level 0
         updatePainLevel(0);
@@ -227,15 +202,10 @@
         document.getElementById('preAssessmentForm').onsubmit = async (e) => {
             e.preventDefault();
 
-            if (currentFatigue === null) {
-                showToast("กรุณาเลือกอาการเหนื่อยล้ากล้ามเนื้อ", "warning");
-                return;
-            }
 
             const data = {
                 type: 'pre',
                 painLevel: currentPainLevel,
-                fatigue: currentFatigue,
                 comment: document.getElementById('assessmentComment').value
             };
 
