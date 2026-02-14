@@ -11,6 +11,20 @@
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
     <script>
+        const painConfigs = [
+            { label: 'สบายมาก', emoji: '😊', color: '#22c55e', desc: 'ไม่มีอาการปวดเลย สบายดีมาก' },
+            { label: 'เล็กน้อย', emoji: '🙂', color: '#84cc16', desc: 'รู้สึกปวดเพียงเล็กน้อย ไม่รบกวนงาน' },
+            { label: 'พอทนได้', emoji: '😐', color: '#a8af38', desc: 'เริ่มปวดรำคาญบ้าง แต่ยังทำงานได้ปกติ' },
+            { label: 'ปานกลาง', emoji: '🤨', color: '#facc15', desc: 'ปวดจนต้องพักเป็นระยะ' },
+            { label: 'ค่อนข้างมาก', emoji: '😟', color: '#fbbf24', desc: 'ปวดรบกวนสมาธิในการทำงาน' },
+            { label: 'เจ็บปวด', emoji: '☹️', color: '#f59e0b', desc: 'เริ่มรบกวนชีวิตประจำวัน' },
+            { label: 'เจ็บมาก', emoji: '😣', color: '#ea580c', desc: 'ปวดบ่อย กิจวัตรประจำวันลำบาก' },
+            { label: 'เจ็บรุนแรง', emoji: '😫', color: '#ef4444', desc: 'รบกวนการทำกิจวัตรประจำวันอย่างชัดเจน' },
+            { label: 'ทรมาน', emoji: '😩', color: '#dc2626', desc: 'ปวดจนนอนไม่หลับ หรือทำงานไม่ได้' },
+            { label: 'สาหัส', emoji: '😭', color: '#b91c1c', desc: 'ปวดจนทนไม่ไหว ต้องการความช่วยเหลือ' },
+            { label: 'ขั้นสุด', emoji: '🤢', color: '#991b1b', desc: 'เจ็บปวดที่สุดในชีวิต ไม่สามารถขยับตัวได้' }
+        ];
+
         tailwind.config = {
             darkMode: "class",
             theme: {
@@ -50,92 +64,206 @@
         </div>
     </nav>
 
-    <main class="max-w-3xl mx-auto px-4 py-12">
-        <div class="text-center mb-10">
-            <div class="inline-flex items-center justify-center p-3 bg-primary/10 rounded-2xl text-primary mb-4">
-                <span class="material-icons-outlined text-3xl">fact_check</span>
-            </div>
-            <h1 class="text-3xl font-bold font-display text-slate-900 dark:text-white">แบบประเมินก่อนใช้งาน</h1>
-            <p class="text-slate-500 dark:text-slate-400 mt-2">กรุณาตอบคำถามตามความเป็นจริงเพื่อประสิทธิภาพในการรักษา
-            </p>
+    <main class="max-w-3xl mx-auto px-4 py-8">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold font-display text-slate-900 dark:text-white">ประเมินระดับความเจ็บปวด</h1>
+            <p class="text-slate-500 dark:text-slate-400 mt-2">
+                กรุณาเลือกระดับความเจ็บปวดที่ใกล้เคียงกับอาการของคุณมากที่สุด</p>
         </div>
 
-        <form id="preAssessmentForm" class="space-y-6">
+        <form id="preAssessmentForm" class="space-y-6 pb-20">
+            <!-- Premium Pain Scale Card -->
             <div
-                class="bg-white dark:bg-card-dark p-8 rounded-3xl border border-slate-200 dark:border-border-dark shadow-sm space-y-8">
-                <!-- Question 1 -->
-                <div class="space-y-4">
-                    <label class="block text-lg font-semibold text-slate-800 dark:text-slate-200">1.
-                        ขณะนี้คุณมีระดับความเจ็บปวดอยู่ที่เท่าใด? (0-10)</label>
-                    <div class="grid grid-cols-11 gap-1">
-                        <!-- Rating buttons -->
+                class="bg-white dark:bg-card-dark p-8 rounded-[2.5rem] border border-slate-200 dark:border-border-dark shadow-xl shadow-slate-200/50 dark:shadow-none text-center space-y-8 overflow-hidden">
+                <!-- Large Animated Emoji -->
+                <div id="mainEmojiContainer" class="relative py-4">
+                    <div id="painEmoji" class="text-8xl transition-all duration-300 transform scale-100">😊</div>
+                    <div class="mt-4">
+                        <h2 class="text-xl font-bold text-slate-800 dark:text-white">คุณเจ็บมากแค่ไหน?</h2>
+                    </div>
+                </div>
+
+                <!-- Pain Scale Selector -->
+                <div class="relative px-2">
+                    <div class="flex justify-between items-end gap-1 sm:gap-2 mb-4">
                         <script>
-                            for (let i = 0; i <= 10; i++) {
+                            painConfigs.forEach((config, i) => {
                                 document.write(`
-                                    <button type="button" onclick="selectScore('q1', ${i})" id="q1-${i}" 
-                                        class="h-10 border border-slate-200 dark:border-border-dark rounded-lg flex items-center justify-center text-sm font-medium hover:bg-primary/10 hover:border-primary transition-all q1-btn">
-                                        ${i}
-                                    </button>
+                                    <div class="flex-1 flex flex-col items-center gap-2 group">
+                                        <button type="button" onclick="updatePainLevel(${i})" id="btn-${i}" 
+                                            class="w-full aspect-square max-w-[40px] rounded-full border-2 flex items-center justify-center text-sm font-bold transition-all duration-300 pain-btn"
+                                            style="border-color: ${config.color}33; color: ${config.color}; background: ${config.color}0d">
+                                            ${i}
+                                        </button>
+                                    </div>
                                 `);
-                            }
+                            });
                         </script>
                     </div>
-                </div>
-
-                <!-- Question 2 -->
-                <div class="space-y-4">
-                    <label class="block text-lg font-semibold text-slate-800 dark:text-slate-200">2.
-                        คุณรู้สึกล้าหรือตึงที่กล้ามเนื้อหรือไม่?</label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button type="button" onclick="selectScore('q2', 'yes')" id="q2-yes"
-                            class="p-4 border border-slate-200 dark:border-border-dark rounded-2xl text-center hover:bg-primary/10 transition-all q2-btn">รู้สึกมาก</button>
-                        <button type="button" onclick="selectScore('q2', 'no')" id="q2-no"
-                            class="p-4 border border-slate-200 dark:border-border-dark rounded-2xl text-center hover:bg-primary/10 transition-all q2-btn">ไม่ค่อยรู้สึก</button>
+                    <!-- Gradient Track -->
+                    <div
+                        class="h-2 w-full rounded-full bg-gradient-to-r from-green-500 via-yellow-400 to-red-600 opacity-80">
                     </div>
                 </div>
 
-                <!-- Question 3 -->
-                <div class="space-y-4">
-                    <label class="block text-lg font-semibold text-slate-800 dark:text-slate-200">3.
-                        สภาพจิตใจในวันนี้เป็นอย่างไร?</label>
-                    <textarea
-                        class="w-full bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-border-dark rounded-2xl p-4 text-slate-700 dark:text-slate-200 focus:ring-primary focus:border-primary"
-                        rows="4" placeholder="ระบุความรู้สึกของคุณ..."></textarea>
+                <!-- Info Box -->
+                <div class="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl text-left border border-slate-100 dark:border-border-dark transition-all duration-300"
+                    id="infoBox">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase tracking-widest font-bold">ระดับที่เลือก</p>
+                            <p id="levelDisplay" class="text-2xl font-bold text-primary">0</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase tracking-widest font-bold">อาการ</p>
+                            <p id="statusDisplay" class="text-2xl font-bold" style="color: #22c55e">สบายมาก</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-200 dark:border-border-dark">
+                        <p class="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">คำอธิบาย</p>
+                        <p id="descDisplay" class="text-slate-600 dark:text-slate-400">ไม่มีอาการปวดเลย สบายดีมาก</p>
+                    </div>
                 </div>
             </div>
 
-            <button type="submit"
-                class="w-full py-4 bg-primary hover:bg-blue-600 text-white font-bold rounded-2xl transition-all shadow-lg shadow-primary/25 active:scale-[0.98]">
-                ส่งแบบประเมิน
-            </button>
+            <div
+                class="bg-white dark:bg-card-dark p-8 rounded-[2.5rem] border border-slate-200 dark:border-border-dark shadow-sm space-y-6">
+                <!-- Fatigue Question -->
+                <div class="space-y-4">
+                    <label
+                        class="block text-lg font-semibold text-slate-800 dark:text-white">คุณรู้สึกล้าหรือตึงที่กล้ามเนื้อหรือไม่?</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button type="button" onclick="selectFatigue('yes')" id="fatigue-yes"
+                            class="p-4 border-2 border-slate-100 dark:border-border-dark rounded-2xl text-center hover:bg-primary/5 transition-all fatigue-btn bg-slate-50 dark:bg-slate-800/30">รู้สึกมาก</button>
+                        <button type="button" onclick="selectFatigue('no')" id="fatigue-no"
+                            class="p-4 border-2 border-slate-100 dark:border-border-dark rounded-2xl text-center hover:bg-primary/5 transition-all fatigue-btn bg-slate-50 dark:bg-slate-800/30">ไม่ค่อยรู้สึก</button>
+                    </div>
+                </div>
+
+                <!-- Comment -->
+                <div class="space-y-4">
+                    <label class="block text-lg font-semibold text-slate-800 dark:text-white">คำอธิบายเพิ่มเติม
+                        (ถ้ามี)</label>
+                    <textarea id="assessmentComment"
+                        class="w-full bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-border-dark rounded-2xl p-4 text-slate-700 dark:text-slate-200 focus:ring-primary focus:border-primary transition-all"
+                        rows="3" placeholder="ระบุสิ่งที่ต้องการให้ระบบทราบ..."></textarea>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <button type="button" onclick="window.location.href='rehab.html'"
+                    class="py-4 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-2xl hover:bg-slate-300 dark:hover:bg-slate-700 transition-all active:scale-[0.98]">
+                    ยกเลิก
+                </button>
+                <button type="submit"
+                    class="py-4 bg-primary hover:bg-blue-600 text-white font-bold rounded-2xl transition-all shadow-lg shadow-primary/25 active:scale-[0.98]">
+                    บันทึกผล
+                </button>
+            </div>
         </form>
     </main>
 
     <script src="toast.js"></script>
     <script>
-        function selectScore(q, val) {
-            // Remove active classes from all buttons in the same question
-            document.querySelectorAll(`.${q}-btn`).forEach(btn => {
-                btn.classList.remove('bg-primary', 'text-white', 'border-primary');
-                btn.classList.add('hover:bg-primary/10');
-            });
-            // Add active classes to selected button
-            const selected = document.getElementById(`${q}-${val}`);
-            selected.classList.remove('hover:bg-primary/10');
-            selected.classList.add('bg-primary', 'text-white', 'border-primary');
-        }
+        let currentPainLevel = 0;
+        let currentFatigue = null;
 
-        document.getElementById('preAssessmentForm').onsubmit = (e) => {
-            e.preventDefault();
-            showResultModal({
-                title: "บันทึกสำเร็จ",
-                message: "ส่งแบบประเมินก่อนใช้งานเรียบร้อยแล้ว เตรียมตัวเริ่มฝึกได้เลย!",
-                type: 'success',
-                duration: 2000,
-                onAction: () => {
-                    window.location.href = 'rehab.html';
+        function updatePainLevel(level) {
+            currentPainLevel = level;
+            const config = painConfigs[level];
+
+            // Update Buttons
+            document.querySelectorAll('.pain-btn').forEach((btn, i) => {
+                const c = painConfigs[i].color;
+                if (i === level) {
+                    btn.style.background = c;
+                    btn.style.color = 'white';
+                    btn.style.borderColor = c;
+                    btn.classList.add('scale-125', 'shadow-lg');
+                } else {
+                    btn.style.background = c + '0d';
+                    btn.style.color = c;
+                    btn.style.borderColor = c + '33';
+                    btn.classList.remove('scale-125', 'shadow-lg');
                 }
             });
+
+            // Update Emoji & Info with Animation
+            const emojiEl = document.getElementById('painEmoji');
+            emojiEl.innerText = config.emoji;
+            emojiEl.style.transform = 'scale(0.5)';
+
+            setTimeout(() => {
+                emojiEl.style.transform = 'scale(1.2)';
+                setTimeout(() => emojiEl.style.transform = 'scale(1)', 150);
+            }, 10);
+
+            // Shaking if high pain
+            if (level >= 7) {
+                emojiEl.classList.add('animate-bounce');
+                setTimeout(() => emojiEl.classList.remove('animate-bounce'), 1000);
+            }
+
+            document.getElementById('levelDisplay').innerText = level;
+            document.getElementById('statusDisplay').innerText = config.label;
+            document.getElementById('statusDisplay').style.color = config.color;
+            document.getElementById('descDisplay').innerText = config.desc;
+        }
+
+        function selectFatigue(val) {
+            currentFatigue = val;
+            document.querySelectorAll('.fatigue-btn').forEach(btn => {
+                btn.classList.remove('border-primary', 'bg-primary/10', 'text-primary', 'font-bold');
+                btn.classList.add('border-slate-100', 'dark:border-border-dark', 'bg-slate-50', 'dark:bg-slate-800/30');
+            });
+            const selected = document.getElementById(`fatigue-${val}`);
+            selected.classList.remove('border-slate-100', 'dark:border-border-dark', 'bg-slate-50', 'dark:bg-slate-800/30');
+            selected.classList.add('border-primary', 'bg-primary/10', 'text-primary', 'font-bold');
+        }
+
+        // Initialize level 0
+        updatePainLevel(0);
+
+        document.getElementById('preAssessmentForm').onsubmit = async (e) => {
+            e.preventDefault();
+
+            if (currentFatigue === null) {
+                showToast("กรุณาเลือกอาการเหนื่อยล้ากล้ามเนื้อ", "warning");
+                return;
+            }
+
+            const data = {
+                type: 'pre',
+                painLevel: currentPainLevel,
+                fatigue: currentFatigue,
+                comment: document.getElementById('assessmentComment').value
+            };
+
+            try {
+                const res = await fetch('/api/assessment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+                if (result.success) {
+                    showResultModal({
+                        title: "บันทึกสำเร็จ",
+                        message: "ส่งแบบประเมินก่อนใช้งานเรียบร้อยแล้ว เตรียมตัวเริ่มฝึกได้เลย!",
+                        type: 'success',
+                        duration: 2000,
+                        onAction: () => {
+                            window.location.href = 'rehab.html';
+                        }
+                    });
+                } else {
+                    showToast(result.message || "เกิดข้อผิดพลาดในการบันทึก", "error");
+                }
+            } catch (err) {
+                console.error(err);
+                showToast("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error");
+            }
         };
     </script>
 </body>

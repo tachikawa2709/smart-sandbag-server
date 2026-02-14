@@ -115,27 +115,72 @@
 
     <script src="toast.js"></script>
     <script>
+        let currentPainLevel = null;
+        let currentFatigue = null;
+
         function selectScore(q, val) {
-            document.querySelectorAll(`.${q}-btn`).forEach(btn => {
-                btn.classList.remove('bg-emerald-500', 'text-white', 'border-emerald-500');
-                btn.classList.add('hover:bg-emerald-500/10');
-            });
+            if (q === 'q1') {
+                currentPainLevel = val;
+                document.querySelectorAll(`.q1-btn`).forEach(btn => {
+                    btn.classList.remove('bg-emerald-500', 'text-white', 'border-emerald-500');
+                    btn.classList.add('hover:bg-emerald-500/10');
+                });
+            } else {
+                currentFatigue = val;
+                document.querySelectorAll(`.q2-btn`).forEach(btn => {
+                    btn.classList.remove('bg-emerald-500', 'text-white', 'border-emerald-500');
+                    btn.classList.add('hover:bg-emerald-500/10');
+                });
+            }
             const selected = document.getElementById(`${q}-${val}`);
             selected.classList.remove('hover:bg-emerald-500/10');
             selected.classList.add('bg-emerald-500', 'text-white', 'border-emerald-500');
         }
 
-        document.getElementById('postAssessmentForm').onsubmit = (e) => {
+        document.getElementById('postAssessmentForm').onsubmit = async (e) => {
             e.preventDefault();
-            showResultModal({
-                title: "ขอบคุณสำหรับการประเมิน",
-                message: "บันทึกผลหลังใช้งานเรียบร้อยแล้ว พักผ่อนให้เพียงพอนะครับ!",
-                type: 'success',
-                duration: 2000,
-                onAction: () => {
-                    window.location.href = 'rehab.html';
+
+            if (currentPainLevel === null) {
+                showToast("กรุณาเลือกระดับความเจ็บปวด", "warning");
+                return;
+            }
+            if (currentFatigue === null) {
+                showToast("กรุณาเลือกอาการเหนื่อยล้า", "warning");
+                return;
+            }
+
+            const data = {
+                type: 'post',
+                painLevel: currentPainLevel,
+                fatigue: currentFatigue,
+                comment: document.querySelector('textarea').value
+            };
+
+            try {
+                const res = await fetch('/api/assessment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+                if (result.success) {
+                    showResultModal({
+                        title: "ขอบคุณสำหรับการประเมิน",
+                        message: "บันทึกผลหลังใช้งานเรียบร้อยแล้ว พักผ่อนให้เพียงพอนะครับ!",
+                        type: 'success',
+                        duration: 2000,
+                        onAction: () => {
+                            window.location.href = 'rehab.html';
+                        }
+                    });
+                } else {
+                    showToast(result.message || "เกิดข้อผิดพลาดในการบันทึก", "error");
                 }
-            });
+            } catch (err) {
+                console.error(err);
+                showToast("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error");
+            }
         };
     </script>
 </body>

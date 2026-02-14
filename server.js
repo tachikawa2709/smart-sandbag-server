@@ -46,6 +46,16 @@ const ResultSchema = new mongoose.Schema({
 });
 const Result = mongoose.model('Result', ResultSchema);
 
+const AssessmentSchema = new mongoose.Schema({
+    username: { type: String, required: true },
+    type: { type: String, enum: ['pre', 'post'], required: true },
+    painLevel: { type: Number, required: true },
+    fatigue: { type: String }, // 'yes'/'no' or 'low'/'med'/'high'
+    comment: { type: String },
+    date: { type: Date, default: Date.now }
+});
+const Assessment = mongoose.model('Assessment', AssessmentSchema);
+
 // ================= MIDDLEWARE =================
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -267,6 +277,31 @@ app.get('/results', async (req, res) => {
     } catch (err) {
         console.error("❌ Results Fetch Error:", err);
         res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการดึงประวัติ" });
+    }
+});
+
+app.post('/api/assessment', async (req, res) => {
+    if (!req.session.userId) return res.status(401).json({ success: false, message: "กรุณาเข้าสู่ระบบก่อนทำแบบประเมิน" });
+
+    try {
+        const user = await User.findById(req.session.userId);
+        if (!user) return res.status(404).json({ success: false, message: "ไม่พบข้อมูลผู้ใช้" });
+
+        const { type, painLevel, fatigue, comment } = req.body;
+
+        const newAssessment = new Assessment({
+            username: user.username,
+            type,
+            painLevel,
+            fatigue,
+            comment
+        });
+
+        await newAssessment.save();
+        res.json({ success: true, message: "บันทึกข้อมูลแบบประเมินเรียบร้อยแล้ว" });
+    } catch (err) {
+        console.error("❌ Assessment Save Error:", err);
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการบันทึกแบบประเมิน" });
     }
 });
 
