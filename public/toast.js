@@ -96,7 +96,6 @@ function showResultModal({ title, message, type = 'success', duration = 2000, on
                     <div class="size-24 rounded-full border-4 flex items-center justify-center ${glowClass}" style="border-color: ${accentColor}; background-color: ${accentColor}1a">
                         <span class="material-icons-outlined text-6xl font-bold" style="color: ${accentColor}">${iconName}</span>
                     </div>
-                    ${isSuccess ? '<div class="absolute -top-3 -right-3 animate-bounce text-green-400"><span class="material-icons-outlined text-2xl">auto_awesome</span></div>' : ''}
                 </div>
             </div>
             <!-- Text Content -->
