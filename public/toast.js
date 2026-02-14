@@ -42,7 +42,7 @@ function showToast(message, type = 'info', duration = 2000) {
     toast.style.borderBottom = `4px solid ${borderColor}`;
 
     toast.innerHTML = `
-        <span class="material-icons-outlined text-xl" style="color: ${borderColor}">${icon}</span>
+        <span class="material-symbols-outlined text-xl" style="color: ${borderColor}">${icon}</span>
         <span class="text-sm font-medium tracking-wide">${message}</span>
     `;
 
@@ -94,7 +94,7 @@ function showResultModal({ title, message, type = 'success', duration = 2000, on
             <div class="flex justify-center mb-8">
                 <div class="relative">
                     <div class="size-24 rounded-full border-4 flex items-center justify-center ${glowClass}" style="border-color: ${accentColor}; background-color: ${accentColor}1a">
-                        <span class="material-icons-outlined text-6xl font-bold" style="color: ${accentColor}">${iconName}</span>
+                        <span class="material-symbols-outlined text-6xl font-bold" style="color: ${accentColor}">${iconName}</span>
                     </div>
                 </div>
             </div>
