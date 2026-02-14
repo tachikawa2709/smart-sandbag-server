@@ -153,10 +153,21 @@ function checkDateSwitch() {
 }
 
 
+let isPaused = false;
+
 // ---------- ปุ่ม Control ----------
 function start() {
-    ws.send(JSON.stringify({ type: "control", running: true }));
-    elapsedTime = 0;
+    ws.send(JSON.stringify({ type: "control", running: true, resume: isPaused }));
+
+    // ถ้าไม่ได้เป็นการเล่นต่อ ให้เริ่มนับเวลาจาก 0
+    if (!isPaused) {
+        elapsedTime = 0;
+    }
+
+    // รีเซ็ตสถานะปุ่ม
+    isPaused = false;
+    updateStartButtonUI(false);
+
     if (timer) clearInterval(timer);
     timer = setInterval(() => {
         elapsedTime++;
@@ -166,20 +177,56 @@ function start() {
 
 function stop() {
     clearInterval(timer);
-    ws.send(JSON.stringify({ type: "control", running: false }));
+    ws.send(JSON.stringify({ type: "control", running: false, pause: true }));
+
+    // เข้าสู่สถานะพัก และเปลี่ยนชื่อปุ่มเป็น "เล่นต่อ"
+    isPaused = true;
+    updateStartButtonUI(true);
+
     updateChart();
+    processDeviceStatus("Paused");
 }
 
 function reset() {
-    stop();
+    clearInterval(timer);
     elapsedTime = 0;
     angle = 0;
     rep = 0;
     calories = 0;
     isResetting = true;
+    isPaused = false;
+
+    // รีเซ็ตชื่อปุ่มกลับเป็น "เริ่ม"
+    updateStartButtonUI(false);
+
     updateUI();
     processDeviceStatus("กำลังรีบูต...");
     ws.send(JSON.stringify({ type: "control", reset: true }));
+}
+
+function updateStartButtonUI(paused) {
+    const btn = document.getElementById('startBtn');
+    const icon = document.getElementById('startBtnIcon');
+    const text = document.getElementById('startBtnText');
+
+    if (!btn || !icon || !text) return;
+
+    if (paused) {
+        btn.classList.replace('bg-primary', 'bg-amber-500');
+        btn.classList.replace('hover:bg-blue-600', 'hover:bg-amber-600');
+        btn.classList.replace('shadow-primary/20', 'shadow-amber-500/20');
+        icon.innerText = 'play_circle';
+        text.innerText = 'เล่นต่อ';
+    } else {
+        btn.classList.add('bg-primary');
+        btn.classList.remove('bg-amber-500');
+        btn.classList.add('hover:bg-blue-600');
+        btn.classList.remove('hover:bg-amber-600');
+        btn.classList.add('shadow-primary/20');
+        btn.classList.remove('shadow-amber-500/20');
+        icon.innerText = 'play_arrow';
+        text.innerText = 'เริ่ม';
+    }
 }
 
 function saveResult() {
