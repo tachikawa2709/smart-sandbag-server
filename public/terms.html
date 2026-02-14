@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html class="dark" lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Terms of Service - StrongEase SandBag</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#38bdf8",
+                        "background-dark": "#020617",
+                        "card-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "Kanit", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply font-display bg-background-dark text-slate-300 antialiased;
+            }
+            h1, h2, h3 {
+                @apply text-white font-bold tracking-tight;
+            }
+            .glass-card {
+                @apply bg-card-dark/50 border border-white/10 backdrop-blur-xl;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen py-12 px-4 md:px-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-12">
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-12 h-12 bg-gradient-to-br from-sky-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-sky-500/20">
+                    <span class="material-icons text-white text-2xl">bolt</span>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold uppercase tracking-widest text-white">StrongEase</h1>
+                    <p class="text-sky-400 text-xs font-bold uppercase tracking-widest">SandBag Innovator</p>
+                </div>
+            </div>
+            <button onclick="window.history.back()"
+                class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-all active:scale-95">
+                <span class="material-icons text-lg">arrow_back</span>
+                <span class="text-sm font-medium">ย้อนกลับ</span>
+            </button>
+        </div>
+
+        <!-- Main Content Card -->
+        <div class="glass-card rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-sky-500/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
+
+            <div class="relative z-10 space-y-12">
+                <div class="border-b border-white/5 pb-8">
+                    <h2 class="text-4xl md:text-5xl mb-4">ข้อกำหนดและเงื่อนไขการใช้บริการ</h2>
+                    <div class="flex flex-wrap items-center gap-6 text-sm text-slate-500">
+                        <span class="flex items-center gap-2">
+                            <span class="material-icons text-sky-400 text-base">event_note</span>
+                            วันที่มีผลบังคับใช้: 15 กุมภาพันธ์ พ.ศ.2569
+                        </span>
+                        <span class="flex items-center gap-2">
+                            <span class="material-icons text-sky-400 text-base">verified</span>
+                            เวอร์ชัน 1.0 (Official)
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Sections -->
+                <div class="space-y-10 text-lg leading-relaxed text-slate-400">
+                    <section class="space-y-4">
+                        <h3 class="text-2xl text-white flex items-center gap-3">
+                            <span
+                                class="size-8 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-400 text-sm">1</span>
+                            บทนำ
+                        </h3>
+                        <p>เอกสารฉบับนี้เป็นข้อตกลงระหว่างผู้ใช้งาน กับ
+                            ผู้ให้บริการแพลตฟอร์มฝึกออกกำลังกายร่วมกับนวัตกรรมถุงทรายถ่วงน้ำหนักระบบสายดึงเสริมแรงต้านอัจฉริยะ
+                            <strong>StrongEase SandBag</strong></p>
+                        <p class="bg-sky-500/5 border-l-4 border-sky-500/50 p-4 text-sky-100 rounded-r-xl">
+                            เมื่อผู้ใช้งานสมัครสมาชิก เข้าสู่ระบบ หรือใช้อุปกรณ์ ถือว่าท่านยอมรับข้อกำหนดทั้งหมดนี้
+                        </p>
+                    </section> section
+
+                    <section class="space-y-4">
+                        <h3 class="text-2xl text-white flex items-center gap-3">
+                            <span
+                                class="size-8 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-400 text-sm">2</span>
+                            ลักษณะของบริการ
+                        </h3>
+                        <p>ระบบประกอบด้วยนวัตกรรมและเทคโนโลยีดังนี้:</p>
+                        <ul class="grid md:grid-cols-2 gap-3 list-none">
+                            <li class="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5">
+                                <span class="material-icons text-sky-400">fitness_center</span>
+                                อุปกรณ์ถุงทรายแบบมีสายดึง
+                            </li>
+                            <li class="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5">
+                                <span class="material-icons text-sky-400">sensors</span> เซนเซอร์ตรวจจับองศา
+                            </li>
+                            <li class="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5">
+                                <span class="material-icons text-sky-400">calculate</span> ระบบประมวลผล (Rep Counter)
+                            </li>
+                            <li class="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5">
+                                <span class="material-icons text-sky-400">insights</span> กราฟและสถิติแบบ Real-time
+                            </li>
+                        </ul>
+                    </section>
+
+                    <section class="space-y-4">
+                        <h3 class="text-2xl text-rose-400 flex items-center gap-3 font-bold">
+                            <span
+                                class="size-8 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-400 text-sm">3</span>
+                            ข้อจำกัดทางการแพทย์ (สำคัญ)
+                        </h3>
+                        <div class="bg-rose-500/5 border-2 border-rose-500/20 p-6 rounded-3xl space-y-4">
+                            <p class="text-rose-200 font-bold flex items-center gap-2">
+                                <span class="material-icons">warning</span> ระบบนี้ ไม่ใช่อุปกรณ์ทางการแพทย์
+                            </p>
+                            <p>ข้อมูลที่แสดง เช่น มุมองศา, จำนวนครั้ง, และระยะเวลา เป็นข้อมูลเพื่อการฝึกเท่านั้น
+                                ไม่สามารถใช้แทนคำวินิจฉัยทางการแพทย์ได้</p>
+                            <p class="text-slate-300">ผู้ใช้งานควรปรึกษาแพทย์ก่อนใช้งาน หากมีโรคประจำตัว เช่น โรคหัวใจ
+                                หรือปัญหากระดูกและข้อ</p>
+                        </div>
+                    </section>
+
+                    <section class="space-y-4">
+                        <h3 class="text-2xl text-white flex items-center gap-3">
+                            <span
+                                class="size-8 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-400 text-sm">4</span>
+                            ความปลอดภัยในการใช้อุปกรณ์
+                        </h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3">
+                                <span class="material-icons text-sky-400 mt-1">check_circle</span>
+                                ตรวจสอบสภาพอุปกรณ์ก่อนใช้งานทุกครั้ง
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="material-icons text-sky-400 mt-1">check_circle</span>
+                                ใช้งานตามคู่มืออย่างเคร่งครัด
+                            </li>
+                            <li class="flex items-start gap-3 text-rose-400 font-medium">
+                                <span class="material-icons mt-1">error_outline</span>
+                                หยุดใช้งานทันทีหากมีอาการเจ็บผิดปกติ
+                            </li>
+                        </ul>
+                    </section>
+
+                    <section class="space-y-4">
+                        <h3 class="text-2xl text-white flex items-center gap-3">
+                            <span
+                                class="size-8 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-400 text-sm">5</span>
+                            บัญชีผู้ใช้งาน
+                        </h3>
+                        <p>ผู้ใช้งานตกลงจะให้ข้อมูลที่ถูกต้องในการสมัครสมาชิก รักษาความลับของรหัสผ่าน
+                            และไม่ใช้บัญชีผู้อื่นโดยไม่ได้รับอนุญาต</p>
+                    </section>
+
+                    <section class="space-y-4">
+                        <h3 class="text-2xl text-white flex items-center gap-3">
+                            <span
+                                class="size-8 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-400 text-sm">6</span>
+                            ทรัพย์สินทางปัญญา
+                        </h3>
+                        <p>โครงสร้างระบบแรงต้าน, กลไกสายดึง, ซอฟต์แวร์ประมวลผล และอัลกอริทึมวิเคราะห์การเคลื่อนไหว
+                            เป็นทรัพย์สินของผู้พัฒนา ห้ามทำซ้ำ ดัดแปลง หรือวิศวกรรมย้อนกลับ</p>
+                    </section>
+
+                    <section class="space-y-4">
+                        <h3 class="text-2xl text-white flex items-center gap-3">
+                            <span
+                                class="size-8 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-400 text-sm">7</span>
+                            การจำกัดความรับผิด
+                        </h3>
+                        <p>ผู้ให้บริการจะไม่รับผิดชอบต่อการบาดเจ็บจากการใช้งานผิดท่า ความคลาดเคลื่อนของข้อมูลเซนเซอร์
+                            หรือปัญหาทางเทคนิคจากอินเทอร์เน็ต</p>
+                    </section>
+                </div>
+
+                <!-- Footer -->
+                <div class="pt-12 border-t border-white/10 text-center text-slate-500 text-sm">
+                    <p>&copy; 2026 StrongEase SandBag. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

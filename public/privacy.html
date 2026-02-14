@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html class="dark" lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Privacy Policy - StrongEase SandBag</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#38bdf8",
+                        "background-dark": "#020617",
+                        "card-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "Kanit", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply font-display bg-background-dark text-slate-300 antialiased;
+            }
+            h1, h2, h3 {
+                @apply text-white font-bold tracking-tight;
+            }
+            .glass-card {
+                @apply bg-card-dark/50 border border-white/10 backdrop-blur-xl;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen py-12 px-4 md:px-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-12">
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-12 h-12 bg-gradient-to-br from-sky-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-sky-500/20">
+                    <span class="material-icons text-white text-2xl">security</span>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold uppercase tracking-widest text-white">StrongEase</h1>
+                    <p class="text-primary text-xs font-bold uppercase tracking-widest">Privacy Policy</p>
+                </div>
+            </div>
+            <button onclick="window.history.back()"
+                class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-all active:scale-95">
+                <span class="material-icons text-lg">arrow_back</span>
+                <span class="text-sm font-medium">ย้อนกลับ</span>
+            </button>
+        </div>
+
+        <!-- Main Content Card -->
+        <div class="glass-card rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
+
+            <div class="relative z-10 space-y-12">
+                <div class="border-b border-white/5 pb-8">
+                    <h2 class="text-4xl md:text-5xl mb-4">นโยบายความเป็นส่วนตัว</h2>
+                    <div class="flex flex-wrap items-center gap-6 text-sm text-slate-500">
+                        <span class="flex items-center gap-2">
+                            <span class="material-icons text-primary text-base">event_note</span>
+                            วันที่มีผลบังคับใช้: 15 กุมภาพันธ์ พ.ศ.2569
+                        </span>
+                        <span class="flex items-center gap-2">
+                            <span class="material-icons text-primary text-base">verified_user</span>
+                            GDPR & PDPA Compliant
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Sections -->
+                <div class="space-y-10 text-lg leading-relaxed text-slate-400">
+
+                    <section class="space-y-4">
+                        <h3 class="text-2xl text-white flex items-center gap-3">
+                            <span
+                                class="size-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-sm font-bold">1</span>
+                            ข้อมูลที่เราเก็บรวบรวม
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-white/5 border border-white/5 p-6 rounded-2xl">
+                                <h4 class="text-white font-bold mb-3 flex items-center gap-2">
+                                    <span class="material-icons text-primary">person</span> ข้อมูลส่วนบุคคล
+                                </h4>
+                                <ul class="text-sm space-y-2">
+                                    <li>• ชื่อ – นามสกุล</li>
+                                    <li>• อีเมล</li>
+                                    <li>• อายุ / เพศ</li>
+                                    <li>• เบอร์โทรศัพท์</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white/5 border border-white/5 p-6 rounded-2xl">
+                                <h4 class="text-white font-bold mb-3 flex items-center gap-2">
+                                    <span class="material-icons text-primary">fitness_center</span> ข้อมูลการฝึก (IoT)
+                                </h4>
+                                <ul class="text-sm space-y-2">
+                                    <li>• มุมการเคลื่อนไหว (Angle Data)</li>
+                                    <li>• จำนวนครั้ง (Rep Count)</li>
+                                    <li>• ระยะเวลาและค่าแรงต้าน</li>
+                                    <li>• ข้อมูลเซนเซอร์ Real-time</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="space-y-4">
+                        <h3 class="text-2xl text-white flex items-center gap-3">
+                            <span
+                                class="size-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-sm font-bold">2</span>
+                            วัตถุประสงค์ในการใช้ข้อมูล
+                        </h3>
+                        <p>เรานำข้อมูลมาสร้างประสบการณ์การฝึกที่ดีที่สุดให้คุณ:</p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3 p-4 bg-primary/5 rounded-2xl border border-primary/10">
+                                <span class="material-icons text-primary">insights</span>
+                                <span>คำนวณจำนวนครั้งและวิเคราะห์คุณภาพการเคลื่อนไหวอัตโนมัติ</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-4 bg-primary/5 rounded-2xl border border-primary/10">
+                                <span class="material-icons text-primary">trending_up</span>
+                                <span>แสดงกราฟ สถิติ และปรับปรุงอัลกอริทึมให้แม่นยำมากขึ้น</span>
+                            </div>
+                        </div>
+                        <p class="text-primary font-bold text-center mt-4">
+                            "เราจะไม่ขายข้อมูลของคุณให้บุคคลภายนอกโดยเด็ดขาด"</p>
+                    </section>
+
+                    <section class="space-y-4">
+                        <h3 class="text-2xl text-white flex items-center gap-3">
+                            <span
+                                class="size-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-sm font-bold">3</span>
+                            การประมวลผลข้อมูลจากอุปกรณ์ IoT
+                        </h3>
+                        <p>ข้อมูลจากนวัตกรรมถุงทรายจะส่งผ่านระบบ <strong>WebSocket</strong> ที่ปลอดภัย:</p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center gap-3"><span
+                                    class="material-icons text-emerald-400">lock</span> การเข้ารหัสระหว่างการส่ง
+                                (Encrypted Transmission)</li>
+                            <li class="flex items-center gap-3"><span
+                                    class="material-icons text-emerald-400">storage</span> จัดเก็บบน Server
+                                ที่มีมาตรฐานความปลอดภัยสูง</li>
+                            <li class="flex items-center gap-3"><span
+                                    class="material-icons text-emerald-400">admin_panel_settings</span>
+                                จำกัดสิทธิ์การเข้าถึงเฉพาะผู้เกี่ยวข้อง</li>
+                        </ul>
+                    </section>
+
+                    <section class="space-y-4">
+                        <h3 class="text-2xl text-white flex items-center gap-3">
+                            <span
+                                class="size-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-sm font-bold">4</span>
+                            ระยะเวลาการจัดเก็บข้อมูล
+                        </h3>
+                        <p>ข้อมูลจะถูกเก็บตราบเท่าที่บัญชียังใช้งานอยู่ หลังปิดบัญชี ข้อมูลจะถูกลบภายในระยะเวลาที่กำหนด
+                            โดยข้อมูลที่ไม่ระบุตัวบุคคลอาจถูกใช้งานเพื่อการวิจัยและพัฒนาต่อไป</p>
+                    </section>
+
+                    <section class="space-y-4">
+                        <h3 class="text-2xl text-white flex items-center gap-3">
+                            <span
+                                class="size-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-sm font-bold">5</span>
+                            สิทธิของเจ้าของข้อมูล
+                        </h3>
+                        <p>คุณเป็นเจ้าของข้อมูลของคุณเสมอ:</p>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                            <div class="text-center p-4 bg-white/5 rounded-2xl"><span
+                                    class="material-icons block mb-2">visibility</span><span
+                                    class="text-xs">เข้าถึง</span></div>
+                            <div class="text-center p-4 bg-white/5 rounded-2xl"><span
+                                    class="material-icons block mb-2">edit</span><span class="text-xs">แก้ไข</span>
+                            </div>
+                            <div class="text-center p-4 bg-white/5 rounded-2xl"><span
+                                    class="material-icons block mb-2">delete_forever</span><span
+                                    class="text-xs">ลบ</span></div>
+                            <div class="text-center p-4 bg-white/5 rounded-2xl"><span
+                                    class="material-icons block mb-2">cancel</span><span
+                                    class="text-xs">ถอนความยินยอม</span></div>
+                        </div>
+                        <p class="text-center text-primary font-bold">ติดต่อ: tachikawa2709@gmail.com</p>
+                    </section>
+
+                    <section class="space-y-4">
+                        <h3 class="text-2xl text-white flex items-center gap-3">
+                            <span
+                                class="size-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-sm font-bold">6</span>
+                            ความปลอดภัยของข้อมูล
+                        </h3>
+                        <div
+                            class="bg-slate-900 border border-white/5 p-6 rounded-3xl grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="flex items-center gap-3"><span class="material-icons text-primary">key</span>
+                                การเข้ารหัสรหัสผ่าน</div>
+                            <div class="flex items-center gap-3"><span class="material-icons text-primary">hub</span>
+                                ระบบ Firewall & Security</div>
+                            <div class="flex items-center gap-3"><span class="material-icons text-primary">backup</span>
+                                การสำรองข้อมูล (Backup)</div>
+                            <div class="flex items-center gap-3"><span
+                                    class="material-icons text-primary">history_edu</span> การตรวจสอบ Log การเข้าถึง
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Footer -->
+                <div class="pt-12 border-t border-white/10 text-center text-slate-500 text-sm">
+                    <p>&copy; 2026 StrongEase SandBag. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
