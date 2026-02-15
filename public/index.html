@@ -94,16 +94,22 @@
                 class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 focus:border-accent focus:ring-0 transition-colors outline-none text-slate-900 dark:text-white"
                 id="loginInput" placeholder="Username or Email" type="text" />
             </div>
-            <div>
+            <div class="relative">
               <div class="flex justify-between items-center mb-2">
                 <label class="block text-sm font-medium text-slate-700 dark:text-slate-300"
                   for="password">Password</label>
                 <a class="text-xs font-semibold text-accent hover:text-sky-400 transition-all" href="#"
                   onclick="forgotPassword(event)">Forgot Password?</a>
               </div>
-              <input
-                class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 focus:border-accent focus:ring-0 transition-colors outline-none text-slate-900 dark:text-white"
-                id="password" placeholder="••••••••" type="password" />
+              <div class="relative">
+                <input
+                  class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 focus:border-accent focus:ring-0 transition-colors outline-none text-slate-900 dark:text-white"
+                  id="password" placeholder="••••••••" type="password" />
+                <button type="button" onclick="togglePassword()"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-accent transition-colors">
+                  <span class="material-symbols-outlined text-xl" id="toggleIcon">visibility_off</span>
+                </button>
+              </div>
             </div>
             <div class="flex items-center">
               <input
@@ -141,6 +147,18 @@
 </html>
 
 <script>
+  function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.getElementById('toggleIcon');
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      toggleIcon.textContent = 'visibility';
+    } else {
+      passwordInput.type = 'password';
+      toggleIcon.textContent = 'visibility_off';
+    }
+  }
+
   async function login(event) {
     event.preventDefault();
 
