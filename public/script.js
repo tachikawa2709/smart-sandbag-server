@@ -1,4 +1,12 @@
 // Force redeploy v1.2
+function getTodayDateString() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 let running = false;
 let elapsedTime = 0;
 let timer = null;
@@ -139,13 +147,7 @@ function calculateStats() {
     checkDateSwitch();
 }
 
-function getTodayDateString() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
+
 
 // ระบบเช็คการเปลี่ยนวัน (ข้ามเที่ยงคืน)
 function checkDateSwitch() {
@@ -594,68 +596,73 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Check Login
     checkLoginStatus();
 
-    // 2. Fetch Gamification Data
-    fetchAchievements();
-
-    // 3. Init Chart
-    const ctx = document.getElementById('workoutChart').getContext('2d');
-    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)');
-    gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
-
-    chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'Repetitions',
-                data: [],
-                backgroundColor: gradient,
-                borderColor: '#3b82f6',
-                borderWidth: 2,
-                pointBackgroundColor: '#ffffff',
-                pointBorderColor: '#3b82f6',
-                pointRadius: 4,
-                pointHoverRadius: 6,
-                fill: true,
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    backgroundColor: '#1e293b',
-                    titleColor: '#f8fafc',
-                    bodyColor: '#f8fafc',
-                    padding: 10,
-                    cornerRadius: 8,
-                    displayColors: false
-                }
-            },
-            scales: {
-                x: {
-                    grid: { display: false, drawBorder: false },
-                    ticks: { color: '#94a3b8' }
-                },
-                y: {
-                    beginAtZero: true,
-                    grid: { color: '#e2e8f0', borderDash: [5, 5] },
-                    ticks: { color: '#94a3b8', stepSize: 1 }
-                }
-            }
-        }
-    });
-
-    // 4. Set Date Picker to Today & Load Chart
+    // 2. Set Date Picker into Today (Priority)
     const today = getTodayDateString();
     const dateInput = document.getElementById('datePicker');
     if (dateInput) {
         dateInput.value = today;
-        // Small delay to ensure DOM is ready and value is set
+    }
+
+    // 3. Fetch Gamification Data
+    fetchAchievements();
+
+    // 4. Init Chart
+    try {
+        const ctx = document.getElementById('workoutChart').getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)');
+        gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Repetitions',
+                    data: [],
+                    backgroundColor: gradient,
+                    borderColor: '#3b82f6',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#3b82f6',
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleColor: '#f8fafc',
+                        bodyColor: '#f8fafc',
+                        padding: 10,
+                        cornerRadius: 8,
+                        displayColors: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: { color: '#94a3b8' }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#e2e8f0', borderDash: [5, 5] },
+                        ticks: { color: '#94a3b8', stepSize: 1 }
+                    }
+                }
+            }
+        });
+
+        // Load Chart Data
         setTimeout(() => updateChart(), 100);
+    } catch (err) {
+        console.error("Chart initialization failed:", err);
     }
 
     // 5. Check Date Switch periodically
