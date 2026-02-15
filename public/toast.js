@@ -157,8 +157,8 @@ function showConfirmModal({ title, message, confirmText = "Confirm", cancelText 
             <!-- Icon Section -->
             <div class="flex justify-center mb-8">
                 <div class="relative">
-                    <div class="size-24 rounded-full border-4 ${borderColor} flex items-center justify-center ${shadowColor}" style="background-color: ${accentColor}1a">
-                        <span class="material-symbols-outlined text-[5rem] font-bold ${textColor}">${iconName}</span>
+                    <div class="size-20 rounded-full border-4 ${borderColor} flex items-center justify-center ${shadowColor}" style="background-color: ${accentColor}1a">
+                        <span class="material-symbols-outlined text-[3.5rem] font-bold ${textColor}">${iconName}</span>
                     </div>
                 </div>
             </div>

@@ -263,7 +263,12 @@
         const confirm = document.getElementById("confirm-password").value;
 
         if (password !== confirm) {
-          showToast("รหัสผ่านไม่ตรงกัน", "warning");
+          showResultModal({
+            title: "รหัสผ่านไม่ตรงกัน",
+            message: "รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง",
+            type: "error",
+            duration: 3000
+          });
           return;
         }
 
