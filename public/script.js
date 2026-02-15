@@ -494,10 +494,11 @@ function renderBadges(list) {
             `;
         } else {
             return `
-                <div class="aspect-square rounded-2xl bg-slate-800/30 border border-white/5 flex flex-col items-center justify-center p-4 text-center grayscale opacity-60">
-                    <span class="material-icons text-4xl text-slate-600 mb-3">${badge.icon}</span>
-                    <p class="text-slate-500 font-bold text-sm leading-tight mb-1">???</p>
-                    <p class="text-slate-600 text-[10px]">Locked</p>
+                <div class="aspect-square rounded-2xl bg-slate-800/40 border border-white/5 flex flex-col items-center justify-center p-4 text-center relative">
+                    <div class="absolute top-2 right-2 text-slate-600"><span class="material-icons text-sm">lock</span></div>
+                    <span class="material-icons text-4xl text-slate-600 mb-3 grayscale opacity-50">${badge.icon}</span>
+                    <p class="text-slate-400 font-bold text-sm leading-tight mb-1">${badge.name}</p>
+                    <p class="text-slate-600 text-[10px] line-clamp-2">${badge.description}</p>
                 </div>
             `;
         }
