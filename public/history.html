@@ -201,6 +201,7 @@
         // --- Init State ---
         let activityChartInstance = null;
         let originalData = [];
+        let originalSessionData = [];
 
         // --- Utils ---
         const formatDate = (dateStr) => {
@@ -230,6 +231,7 @@
 
                 if (data.success) {
                     originalData = data.dailyStats;
+                    originalSessionData = data.sessionStats || [];
                     updateDashboard(data);
                 } else {
                     showToast(data.message, "error");
@@ -283,31 +285,58 @@
             const type = document.getElementById('chartType').value;
             const ctx = document.getElementById('activityChart').getContext('2d');
 
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const diffTime = new Date(endDate) - new Date(startDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const useSessionView = diffDays <= 3; // Show sessions if range is small
+
             // Destroy old chart
             if (activityChartInstance) activityChartInstance.destroy();
 
             // Prepare Data
-            const labels = originalData.map(d => formatDate(d.date));
-            let datasetData, label, color;
+            let labels, datasetData, label, color;
 
-            if (type === 'reps') {
-                datasetData = originalData.map(d => d.totalReps);
-                label = 'Reps';
-                color = '#3b82f6'; // Blue
-            } else if (type === 'calories') {
-                datasetData = originalData.map(d => d.totalCalories);
-                label = 'Calories';
-                color = '#f97316'; // Orange
+            if (useSessionView) {
+                // Session View (Detailed)
+                labels = originalSessionData.map(d => new Date(d.date).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }));
+
+                if (type === 'reps') {
+                    datasetData = originalSessionData.map(d => d.rep);
+                    label = 'Reps (Session)';
+                    color = '#3b82f6';
+                } else if (type === 'calories') {
+                    datasetData = originalSessionData.map(d => (d.rep * 0.5));
+                    label = 'Calories (Session)';
+                    color = '#f97316';
+                } else {
+                    datasetData = originalSessionData.map(d => (d.time / 60));
+                    label = 'Duration (Mins/Session)';
+                    color = '#a855f7';
+                }
             } else {
-                datasetData = originalData.map(d => (d.totalTime / 60)); // Minutes
-                label = 'Duration (Mins)';
-                color = '#a855f7'; // Purple
+                // Daily View (Aggregated)
+                labels = originalData.map(d => formatDate(d.date));
+
+                if (type === 'reps') {
+                    datasetData = originalData.map(d => d.totalReps);
+                    label = 'Total Reps (Daily)';
+                    color = '#3b82f6';
+                } else if (type === 'calories') {
+                    datasetData = originalData.map(d => d.totalCalories);
+                    label = 'Total Calories (Daily)';
+                    color = '#f97316';
+                } else {
+                    datasetData = originalData.map(d => (d.totalTime / 60));
+                    label = 'Total Duration (Mins/Daily)';
+                    color = '#a855f7';
+                }
             }
 
             // Create Gradient
             const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, color + '50'); // 50% opacity
-            gradient.addColorStop(1, color + '00'); // 0% opacity
+            gradient.addColorStop(0, color + '50');
+            gradient.addColorStop(1, color + '00');
 
             activityChartInstance = new Chart(ctx, {
                 type: 'line',
@@ -322,7 +351,8 @@
                         pointBackgroundColor: '#1e293b',
                         pointBorderColor: color,
                         pointBorderWidth: 2,
-                        pointRadius: 4,
+                        pointRadius: useSessionView ? 5 : 4, // Bigger dots for sessions
+                        pointHoverRadius: 7,
                         fill: true,
                         tension: 0.4
                     }]
@@ -340,6 +370,16 @@
                             borderWidth: 1,
                             padding: 10,
                             displayColors: false,
+                            callbacks: {
+                                title: (context) => {
+                                    if (useSessionView) {
+                                        // Show full date time in tooltip for session view
+                                        const index = context[0].dataIndex;
+                                        return new Date(originalSessionData[index].date).toLocaleString('th-TH');
+                                    }
+                                    return context[0].label;
+                                }
+                            }
                         }
                     },
                     scales: {

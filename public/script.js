@@ -241,6 +241,15 @@ function updateStartButtonUI(paused) {
 }
 
 function saveResult() {
+    const btn = document.getElementById('saveBtn');
+    const originalContent = btn ? btn.innerHTML : '';
+
+    if (btn) {
+        btn.disabled = true;
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+        btn.innerHTML = '<span class="material-icons animate-spin">refresh</span> กำลังบันทึก...';
+    }
+
     fetch('/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -249,44 +258,58 @@ function saveResult() {
         .then(res => {
             if (res.status === 401) {
                 showToast("กรุณาเข้าสู่ระบบก่อนบันทึกผล", "warning");
-                return null;
+                // Throw error to skip next then block, or handle gracefully
+                throw new Error("Unauthorized");
+            }
+            if (!res.ok) {
+                return res.json().then(err => { throw new Error(err.message) });
             }
             return res.json();
         })
         .then(result => {
-            if (result) { // Check if result is not null (i.e., not 401)
-                if (result.success) {
-                    // Gamification Feedback
-                    const xpGain = result.xpGained || 0;
-                    let msg = `บันทึกเรียบร้อย! (+${xpGain} XP)`;
+            if (result && result.success) {
+                // Gamification Feedback
+                const xpGain = result.xpGained || 0;
+                let msg = `บันทึกเรียบร้อย! (+${xpGain} XP)`;
 
-                    if (result.levelUp) {
-                        showToast(`🎉 Level Up! ยินดีด้วยคุณขึ้นเลเวล ${result.newLevel}`, 'success');
-                        // Force refresh levels
-                        fetchAchievements();
-                    }
-
-                    if (result.newAchievements && result.newAchievements.length > 0) {
-                        result.newAchievements.forEach(ach => {
-                            showToast(`🏆 Achievement Unlocked: ${ach.name}`, 'warning'); // Use warning style for gold color if avail, or verify toast styles later
-                        });
-                    }
-
-                    showToast(msg, 'success');
-
-                    // Reset Frontend
-                    // Assuming repCount refers to 'rep' and totalTime refers to 'elapsedTime'
-                    rep = 0;
-                    elapsedTime = 0;
-                    calories = 0;
-                    updateUI(); // Assuming updateDisplay() refers to updateUI()
-
-                    // Refresh data
+                if (result.levelUp) {
+                    showToast(`🎉 Level Up! ยินดีด้วยคุณขึ้นเลเวล ${result.newLevel}`, 'success');
+                    // Force refresh levels
                     fetchAchievements();
-                } else {
-                    showToast("บันทึกไม่สำเร็จ: " + result.message, 'error');
                 }
-                updateChart(); // This should be called regardless of success or failure, but after processing the result.
+
+                if (result.newAchievements && result.newAchievements.length > 0) {
+                    result.newAchievements.forEach(ach => {
+                        showToast(`🏆 Achievement Unlocked: ${ach.name}`, 'warning');
+                    });
+                }
+
+                showToast(msg, 'success');
+
+                // Reset Frontend
+                rep = 0;
+                elapsedTime = 0;
+                calories = 0;
+                updateUI();
+
+                // Refresh data
+                fetchAchievements();
+                updateChart();
+            } else if (result) {
+                showToast("บันทึกไม่สำเร็จ: " + result.message, 'error');
+            }
+        })
+        .catch(err => {
+            if (err.message !== "Unauthorized") {
+                console.error("Save Error:", err);
+                showToast(err.message || "เกิดข้อผิดพลาดในการบันทึก", "error");
+            }
+        })
+        .finally(() => {
+            if (btn) {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                btn.innerHTML = originalContent;
             }
         });
 }

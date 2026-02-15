@@ -414,6 +414,14 @@ app.post('/save', async (req, res) => {
         const user = await User.findById(req.session.userId);
         if (!user) return res.status(404).end();
 
+        // [Rate Limit] Prevent double save (5 seconds cooldown)
+        if (user.lastActiveDate) {
+            const diff = Date.now() - new Date(user.lastActiveDate).getTime();
+            if (diff < 5000) {
+                return res.json({ success: false, message: "กรุณารอสักครู่ก่อนบันทึกอีกครั้ง" });
+            }
+        }
+
         const currentRep = req.body.rep;
         const currentTime = req.body.time;
 
@@ -587,6 +595,14 @@ app.get('/api/history', async (req, res) => {
         let dailyStats = {};
         let summary = { totalReps: 0, totalTime: 0, totalCalories: 0, sessionCount: results.length };
 
+        // Session Stats for Granular Chart (Sort by date ascending for chart)
+        const sessionStats = results.map(r => ({
+            date: r.date,
+            rep: r.rep,
+            time: r.time,
+            calories: r.rep * 0.5
+        })).sort((a, b) => new Date(a.date) - new Date(b.date));
+
         results.forEach(r => {
             const dateKey = r.date.toISOString().split('T')[0]; // YYYY-MM-DD
             if (!dailyStats[dateKey]) {
@@ -611,6 +627,7 @@ app.get('/api/history', async (req, res) => {
             success: true,
             summary,
             dailyStats: chartData,
+            sessionStats, // [New] For detailed chart
             recentSessions: results.slice(0, 50) // Return recent 50 sessions for list
         });
 
