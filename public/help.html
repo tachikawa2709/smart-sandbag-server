@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html class="dark" lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Help Center - StrongEase</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3b82f6",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "Kanit", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body { @apply font-display bg-[#020617] text-slate-200 min-h-screen selection:bg-primary/30; }
+        }
+        .glass-panel {
+            @apply bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl;
+        }
+        .input-field {
+            @apply w-full bg-slate-900/50 border border-white/10 rounded-2xl px-5 py-3.5 outline-none focus:border-primary/50 transition-all placeholder:text-slate-600 text-white;
+        }
+    </style>
+</head>
+
+<body class="p-4 md:p-8 lg:p-12">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-12">
+            <div class="flex items-center gap-3">
+                <a href="/rehab.html"
+                    class="w-10 h-10 glass-panel flex items-center justify-center hover:bg-white/10 transition-colors">
+                    <span class="material-icons-outlined text-white">arrow_back</span>
+                </a>
+                <div>
+                    <h1 class="text-3xl font-bold text-white tracking-tight flex items-center gap-2">
+                        <span class="material-icons-outlined text-primary">support_agent</span>
+                        HELP CENTER
+                    </h1>
+                    <p class="text-slate-400 text-sm mt-1">ศูนย์ช่วยเหลือผู้ใช้งาน</p>
+                </div>
+            </div>
+            <div class="hidden md:block">
+                <div class="px-4 py-2 glass-panel text-xs font-bold uppercase tracking-widest text-primary">StrongEase
+                    Support</div>
+            </div>
+        </div>
+
+        <!-- Banner Card -->
+        <div class="glass-panel p-8 mb-8 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+            <div class="relative z-10">
+                <h2 class="text-xl font-bold text-white mb-2">หากคุณพบปัญหาเกี่ยวกับการใช้งาน</h2>
+                <p class="text-slate-400 leading-relaxed max-w-2xl">กรุณากรอกข้อมูลด้านล่าง
+                    ทีมงานจะตรวจสอบข้อมูลระบบและติดต่อกลับคุณโดยเร็วที่สุดเพื่อแก้ไขปัญหาให้คุณอย่างมีประสิทธิภาพ</p>
+            </div>
+        </div>
+
+        <form id="helpForm" class="space-y-8">
+            <!-- Section 1 -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">
+                        1</div>
+                    <h3 class="text-lg font-bold text-white">ข้อมูลผู้ติดต่อ</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="space-y-2">
+                        <label class="text-slate-400 text-xs font-bold uppercase tracking-widest ml-1">ชื่อ –
+                            นามสกุล</label>
+                        <input type="text" id="contactName" required class="input-field" placeholder="กรอกชื่อของคุณ">
+                    </div>
+                    <div class="space-y-2">
+                        <label
+                            class="text-slate-400 text-xs font-bold uppercase tracking-widest ml-1">อีเมลที่ใช้สมัคร</label>
+                        <input type="email" id="contactEmail" required class="input-field"
+                            placeholder="example@mail.com">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-slate-400 text-xs font-bold uppercase tracking-widest ml-1">เบอร์โทรศัพท์
+                            (ถ้ามี)</label>
+                        <input type="tel" id="contactPhone" class="input-field" placeholder="0xx-xxx-xxxx">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-slate-400 text-xs font-bold uppercase tracking-widest ml-1">Username / User
+                            ID</label>
+                        <input type="text" id="contactUserId" class="input-field" placeholder="ระบุชื่อผู้ใช้งาน">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2 -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">
+                        2</div>
+                    <h3 class="text-lg font-bold text-white">ประเภทปัญหา</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <label
+                        class="glass-panel p-4 flex items-center gap-3 cursor-pointer hover:bg-white/10 transition-all select-none group">
+                        <input type="radio" name="issueType" value="login"
+                            class="w-5 h-5 rounded-full border-white/20 bg-transparent text-primary focus:ring-primary ring-offset-slate-900">
+                        <span class="text-sm text-slate-300 group-hover:text-white">ไม่สามารถเข้าสู่ระบบได้</span>
+                    </label>
+                    <label
+                        class="glass-panel p-4 flex items-center gap-3 cursor-pointer hover:bg-white/10 transition-all select-none group">
+                        <input type="radio" name="issueType" value="password"
+                            class="w-5 h-5 rounded-full border-white/20 bg-transparent text-primary focus:ring-primary ring-offset-slate-900">
+                        <span class="text-sm text-slate-300 group-hover:text-white">ลืมรหัสผ่าน</span>
+                    </label>
+                    <label
+                        class="glass-panel p-4 flex items-center gap-3 cursor-pointer hover:bg-white/10 transition-all select-none group">
+                        <input type="radio" name="issueType" value="rep_counter"
+                            class="w-5 h-5 rounded-full border-white/20 bg-transparent text-primary focus:ring-primary ring-offset-slate-900">
+                        <span class="text-sm text-slate-300 group-hover:text-white">ระบบนับครั้ง (Rep) ผิดพลาด</span>
+                    </label>
+                    <label
+                        class="glass-panel p-4 flex items-center gap-3 cursor-pointer hover:bg-white/10 transition-all select-none group">
+                        <input type="radio" name="issueType" value="stats"
+                            class="w-5 h-5 rounded-full border-white/20 bg-transparent text-primary focus:ring-primary ring-offset-slate-900">
+                        <span class="text-sm text-slate-300 group-hover:text-white">กราฟหรือสถิติไม่แสดงผล</span>
+                    </label>
+                    <label
+                        class="glass-panel p-4 flex items-center gap-3 cursor-pointer hover:bg-white/10 transition-all select-none group">
+                        <input type="radio" name="issueType" value="sensor"
+                            class="w-5 h-5 rounded-full border-white/20 bg-transparent text-primary focus:ring-primary ring-offset-slate-900">
+                        <span class="text-sm text-slate-300 group-hover:text-white">เซนเซอร์ไม่อัปเดต Real-time</span>
+                    </label>
+                    <label
+                        class="glass-panel p-4 flex items-center gap-3 cursor-pointer hover:bg-white/10 transition-all select-none group">
+                        <input type="radio" name="issueType" value="hardware"
+                            class="w-5 h-5 rounded-full border-white/20 bg-transparent text-primary focus:ring-primary ring-offset-slate-900">
+                        <span class="text-sm text-slate-300 group-hover:text-white">อุปกรณ์/สายดึงมีปัญหา</span>
+                    </label>
+                    <label
+                        class="glass-panel p-4 flex items-center gap-3 cursor-pointer hover:bg-white/10 transition-all select-none group">
+                        <input type="radio" name="issueType" value="connection"
+                            class="w-5 h-5 rounded-full border-white/20 bg-transparent text-primary focus:ring-primary ring-offset-slate-900">
+                        <span class="text-sm text-slate-300 group-hover:text-white">ปัญหา WiFi / WebSocket</span>
+                    </label>
+                    <label
+                        class="glass-panel p-4 flex items-center gap-3 cursor-pointer hover:bg-white/10 transition-all select-none group">
+                        <input type="radio" name="issueType" value="account"
+                            class="w-5 h-5 rounded-full border-white/20 bg-transparent text-primary focus:ring-primary ring-offset-slate-900">
+                        <span class="text-sm text-slate-300 group-hover:text-white">บัญชีถูกระงับ</span>
+                    </label>
+                    <label
+                        class="glass-panel p-4 flex items-center gap-3 cursor-pointer hover:bg-white/10 transition-all lg:col-span-full select-none group">
+                        <input type="radio" name="issueType" value="other"
+                            class="w-5 h-5 rounded-full border-white/20 bg-transparent text-primary focus:ring-primary ring-offset-slate-900">
+                        <span class="text-sm text-slate-300 group-hover:text-white">อื่นๆ (โปรดระบุ)</span>
+                        <input type="text" id="otherIssue"
+                            class="flex-1 bg-transparent border-0 border-b border-white/10 focus:border-primary focus:ring-0 text-white p-0 ml-2"
+                            placeholder="...">
+                    </label>
+                </div>
+            </section>
+
+            <!-- Section 3 -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">
+                        3</div>
+                    <h3 class="text-lg font-bold text-white">รายละเอียดปัญหา</h3>
+                </div>
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <label
+                            class="text-slate-400 text-xs font-bold uppercase tracking-widest ml-1">โปรดอธิบายปัญหาอย่างละเอียด</label>
+                        <textarea id="issueDetail" rows="4" class="input-field resize-none"
+                            placeholder="แจ้งข้อมูลที่เครื่องยนต์หรือสถานะที่คุณพบ..."></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-2">
+                            <label
+                                class="text-slate-400 text-xs font-bold uppercase tracking-widest ml-1">อุปกรณ์ที่ใช้งาน</label>
+                            <input type="text" id="device" class="input-field"
+                                placeholder="เช่น Android / iPhone / Laptop">
+                        </div>
+                        <div class="space-y-2">
+                            <label
+                                class="text-slate-400 text-xs font-bold uppercase tracking-widest ml-1">เบราว์เซอร์ที่ใช้</label>
+                            <input type="text" id="browser" class="input-field" placeholder="เช่น Chrome, Safari">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4 -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">
+                        4</div>
+                    <h3 class="text-lg font-bold text-white">แนบไฟล์ (ถ้ามี)</h3>
+                </div>
+                <div
+                    class="glass-panel p-8 text-center border-dashed border-2 group hover:border-primary/50 transition-all">
+                    <span
+                        class="material-icons-outlined text-4xl text-slate-500 group-hover:text-primary mb-3">cloud_upload</span>
+                    <p class="text-slate-400 text-sm mb-4">Screenshot, วิดีโอสั้น หรือรูปอุปกรณ์ที่มีปัญหา</p>
+                    <input type="file" id="issueFile" class="hidden">
+                    <button type="button" onclick="document.getElementById('issueFile').click()"
+                        class="px-6 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-white text-sm font-bold transition-all">
+                        เลือกไฟล์แนบ
+                    </button>
+                </div>
+            </section>
+
+            <!-- Section 5 -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">
+                        5</div>
+                    <h3 class="text-lg font-bold text-white">ความเร่งด่วน</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <label class="glass-panel p-4 flex items-center gap-3 cursor-pointer hover:bg-white/5 group">
+                        <input type="radio" name="priority" value="low"
+                            class="w-5 h-5 border-white/20 bg-transparent text-green-500 focus:ring-green-500 ring-offset-slate-900">
+                        <div>
+                            <span class="block text-sm font-bold text-green-400 uppercase">ต่ำ</span>
+                            <span class="text-[10px] text-slate-500">สอบถามทั่วไป</span>
+                        </div>
+                    </label>
+                    <label class="glass-panel p-4 flex items-center gap-3 cursor-pointer hover:bg-white/5 group">
+                        <input type="radio" name="priority" value="medium"
+                            class="w-5 h-5 border-white/20 bg-transparent text-yellow-500 focus:ring-yellow-500 ring-offset-slate-900">
+                        <div>
+                            <span class="block text-sm font-bold text-yellow-400 uppercase">ปานกลาง</span>
+                            <span class="text-[10px] text-slate-500">ระบบใช้งานได้บางส่วน</span>
+                        </div>
+                    </label>
+                    <label class="glass-panel p-4 flex items-center gap-3 cursor-pointer hover:bg-white/5 group">
+                        <input type="radio" name="priority" value="high"
+                            class="w-5 h-5 border-white/20 bg-transparent text-red-500 focus:ring-red-500 ring-offset-slate-900">
+                        <div>
+                            <span class="block text-sm font-bold text-red-400 uppercase">สูง</span>
+                            <span class="text-[10px] text-slate-500">ไม่สามารถใช้งานได้เลย</span>
+                        </div>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Section 6: Confirmation -->
+            <section class="glass-panel p-8 space-y-4">
+                <label class="flex items-center gap-3 cursor-pointer group">
+                    <input type="checkbox" required
+                        class="w-5 h-5 rounded border-white/20 bg-transparent text-primary focus:ring-primary ring-offset-slate-900">
+                    <span
+                        class="text-sm text-slate-400 group-hover:text-slate-300">ข้าพเจ้ายืนยันว่าข้อมูลที่ให้ไว้เป็นความจริง</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                    <input type="checkbox" required
+                        class="w-5 h-5 rounded border-white/20 bg-transparent text-primary focus:ring-primary ring-offset-slate-900">
+                    <span
+                        class="text-sm text-slate-400 group-hover:text-slate-300">ข้าพเจ้ายินยอมให้ทีมงานตรวจสอบข้อมูลบัญชีเพื่อแก้ไขปัญหา</span>
+                </label>
+                <button type="submit"
+                    class="w-full mt-4 py-4 bg-primary hover:bg-blue-600 text-white font-bold rounded-2xl shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                    <span class="material-icons-outlined">send</span>
+                    ส่งคำร้องขอความช่วยเหลือ
+                </button>
+            </section>
+        </form>
+
+        <!-- Footer -->
+        <p class="text-center mt-12 text-slate-500 text-xs font-medium uppercase tracking-[0.2em]">
+            &copy; 2026 StrongEase Support Team. All rights reserved.
+        </p>
+    </div>
+
+    <script src="toast.js"></script>
+    <script>
+        document.getElementById('helpForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const original = btn.innerHTML;
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-icons-outlined animate-spin text-xl">refresh</span> กำลังส่งข้อมูล...';
+
+            // Simulate sending API request
+            setTimeout(() => {
+                showToast("ส่งคำร้องขอเรียบร้อยแล้ว ทีมงานจะติดต่อกลับโดยเร็วที่สุดครับ", "success");
+                btn.innerHTML = original;
+                btn.disabled = false;
+                e.target.reset();
+                setTimeout(() => {
+                    window.location.href = '/rehab.html';
+                }, 2000);
+            }, 1500);
+        });
+    </script>
+</body>
+
+</html>
