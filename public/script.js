@@ -568,6 +568,15 @@ function updateChart() {
 
 // --- Init ---
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Check Login
+    checkLoginStatus();
+
+    // 2. Fetch Gamification Data
+    fetchAchievements();
+
+    // 3. Init Chart
+    const ctx = document.getElementById('workoutChart').getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
     gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)');
     gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
 
@@ -617,50 +626,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    updateChart();
+    // 4. Set Date Picker to Today & Load Chart
+    const today = new Date().toLocaleDateString('en-CA');
+    const dateInput = document.getElementById('datePicker');
+    if (dateInput) {
+        dateInput.value = today;
+        updateChart();
+    }
 
-    // เช็คการเปลี่ยนวันทุก 1 นาที แม้ไม่ได้เทรน
+    // 5. Check Date Switch periodically
     setInterval(checkDateSwitch, 60000);
 });
-
-function updateChart() {
-    const dateInput = document.getElementById('datePicker');
-    const selectedDate = dateInput.value;
-    if (!selectedDate) return;
-
-    fetch('/results')
-        .then(res => {
-            if (res.status === 401) return [];
-            return res.json();
-        })
-        .then(list => {
-            // แก้ไขจุดนี้: แปลง ISO string จาก Server เป็น Local Date ก่อนเทียบ
-            const filteredList = list.filter(item => {
-                const itemLocalDate = new Date(item.date).toLocaleDateString('en-CA');
-                return itemLocalDate === selectedDate;
-            });
-
-            let maxRep = 0;
-            if (filteredList.length > 0) {
-                maxRep = Math.max(...filteredList.map(i => i.rep));
-            }
-            document.getElementById('maxRepDisplay').innerText = `${maxRep} ครั้ง`;
-
-            const labels = [];
-            const data = [];
-
-            filteredList.forEach(item => {
-                const timeLabel = new Date(item.date).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-                labels.push(timeLabel);
-                data.push(item.rep);
-            });
-
-            chart.data.labels = labels;
-            chart.data.datasets[0].data = data;
-            chart.update();
-        })
-        .catch(err => console.error('Error loading chart:', err));
-}
 
 // ---------- UI Update Main ----------
 function updateUI() {
