@@ -417,6 +417,70 @@ app.get('/results', async (req, res) => {
     }
 });
 
+// ================= WORKOUT HISTORY API =================
+app.get('/api/history', async (req, res) => {
+    if (!req.session.userId) return res.status(401).json({ success: false, message: "Unauthorized" });
+
+    try {
+        const user = await User.findById(req.session.userId);
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+        // Date Range Logic
+        let { startDate, endDate } = req.query;
+        let query = { username: user.username };
+
+        if (startDate && endDate) {
+            query.date = {
+                $gte: new Date(startDate),
+                $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+            };
+        } else {
+            // Default to last 7 days if no range provided
+            const end = new Date();
+            const start = new Date();
+            start.setDate(end.getDate() - 7);
+            query.date = { $gte: start, $lte: end };
+        }
+
+        const results = await Result.find(query).sort({ date: -1 });
+
+        // Aggregation for Chart & Summary
+        let dailyStats = {};
+        let summary = { totalReps: 0, totalTime: 0, totalCalories: 0, sessionCount: results.length };
+
+        results.forEach(r => {
+            const dateKey = r.date.toISOString().split('T')[0]; // YYYY-MM-DD
+            if (!dailyStats[dateKey]) {
+                dailyStats[dateKey] = { date: dateKey, totalReps: 0, totalTime: 0, totalCalories: 0 };
+            }
+
+            const calories = r.rep * 0.5; // Approx formula
+
+            dailyStats[dateKey].totalReps += r.rep;
+            dailyStats[dateKey].totalTime += r.time;
+            dailyStats[dateKey].totalCalories += calories;
+
+            summary.totalReps += r.rep;
+            summary.totalTime += r.time;
+            summary.totalCalories += calories;
+        });
+
+        // Convert map to sorted array
+        const chartData = Object.values(dailyStats).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        res.json({
+            success: true,
+            summary,
+            dailyStats: chartData,
+            recentSessions: results.slice(0, 50) // Return recent 50 sessions for list
+        });
+
+    } catch (err) {
+        console.error("❌ History Error:", err);
+        res.status(500).json({ success: false, message: "Error fetching history" });
+    }
+});
+
 app.post('/api/assessment', async (req, res) => {
     if (!req.session.userId) return res.status(401).json({ success: false, message: "กรุณาเข้าสู่ระบบก่อนทำแบบประเมิน" });
 
