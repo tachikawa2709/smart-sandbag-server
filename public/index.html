@@ -141,69 +141,133 @@
     </div>
   </div>
 
+  <!-- Forgot Password Modal -->
+  <div id="forgotPasswordModal"
+    class="fixed inset-0 z-[100] flex items-center justify-center translate-y-full opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="absolute inset-0 bg-[#0f172a]/90 backdrop-blur-sm" onclick="closeForgotModal()"></div>
+    <div
+      class="relative w-full max-w-md bg-[#0f172a] border border-white/10 rounded-3xl p-8 shadow-2xl transform scale-95 transition-all duration-300">
+
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
+          <span class="material-icons-outlined text-3xl text-primary">mark_email_read</span>
+        </div>
+        <h2 class="text-2xl font-bold text-white">ลืมรหัสผ่าน?</h2>
+        <p class="text-slate-400 text-sm mt-2">กรอกอีเมลของคุณเพื่อรับลิงก์สำหรับตั้งรหัสผ่านใหม่</p>
+      </div>
+
+      <form onsubmit="submitForgotPassword(event)" class="space-y-4">
+        <div>
+          <label class="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">อีเมลที่ลงทะเบียน</label>
+          <input type="email" id="forgotEmail" required placeholder="name@example.com"
+            class="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3.5 text-white outline-none focus:border-primary transition-colors mt-1">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mt-6">
+          <button type="button" onclick="closeForgotModal()"
+            class="py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition-colors">
+            ยกเลิก
+          </button>
+          <button type="submit"
+            class="py-3 bg-primary hover:bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
+            ส่งลิ้งก์
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="toast.js"></script>
-</body>
 
-</html>
-
-<script>
-  function togglePassword() {
-    const passwordInput = document.getElementById('password');
-    const toggleIcon = document.getElementById('toggleIcon');
-    if (passwordInput.type === 'password') {
-      passwordInput.type = 'text';
-      toggleIcon.textContent = 'visibility';
-    } else {
-      passwordInput.type = 'password';
-      toggleIcon.textContent = 'visibility_off';
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const toggleIcon = document.getElementById('toggleIcon');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.textContent = 'visibility';
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.textContent = 'visibility_off';
+      }
     }
-  }
 
-  async function login(event) {
-    event.preventDefault();
+    async function login(event) {
+      event.preventDefault();
 
-    const login = document.getElementById('loginInput').value;
-    const password = document.getElementById('password').value;
-    const rememberMe = document.getElementById('remember').checked;
+      const login = document.getElementById('loginInput').value;
+      const password = document.getElementById('password').value;
+      const rememberMe = document.getElementById('remember').checked;
 
-    const res = await fetch('/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ login, password, rememberMe })
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-      window.location.href = '/rehab.html';
-    } else {
-      showToast(data.message || "เข้าสู่ระบบไม่สำเร็จ", "error");
-    }
-  }
-
-  async function forgotPassword(event) {
-    if (event) event.preventDefault();
-    const email = prompt("กรุณากรอก Email ที่ใช้ลงทะเบียน:");
-    if (!email) return;
-
-    try {
-      const res = await fetch('/forgot-password', {
+      const res = await fetch('/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ login, password, rememberMe })
       });
+
       const data = await res.json();
 
       if (data.success) {
-        showToast(data.message, "success");
+        window.location.href = '/rehab.html';
       } else {
-        showToast(data.message, "error");
+        showToast(data.message || "เข้าสู่ระบบไม่สำเร็จ", "error");
       }
-    } catch (err) {
-      showToast("เกิดข้อผิดพลาดในการเชื่อมต่อ", "error");
     }
-  }
-</script>
+
+    function forgotPassword(event) {
+      if (event) event.preventDefault();
+      const modal = document.getElementById('forgotPasswordModal');
+      modal.classList.remove('translate-y-full', 'opacity-0', 'pointer-events-none');
+      modal.querySelector('div.relative').classList.remove('scale-95');
+      modal.querySelector('div.relative').classList.add('scale-100');
+    }
+
+    function closeForgotModal() {
+      const modal = document.getElementById('forgotPasswordModal');
+      modal.classList.add('translate-y-full', 'opacity-0', 'pointer-events-none');
+      modal.querySelector('div.relative').classList.add('scale-95');
+      modal.querySelector('div.relative').classList.remove('scale-100');
+      setTimeout(() => {
+        document.getElementById('forgotEmail').value = '';
+      }, 300);
+    }
+
+    async function submitForgotPassword(event) {
+      event.preventDefault();
+      const email = document.getElementById('forgotEmail').value;
+      const btn = event.target.querySelector('button[type="submit"]');
+      const originalText = btn.innerText;
+
+      btn.innerText = "กำลังส่ง...";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          closeForgotModal();
+          showResultModal({
+            title: "เช็คอีเมลของคุณ",
+            message: "เราได้ส่งลิงก์สำหรับตั้งรหัสผ่านใหม่ไปที่อีเมลของคุณแล้ว (หากไม่พบโปรดเช็คใน Junk Mail)",
+            type: "success",
+            duration: 5000
+          });
+        } else {
+          showToast(data.message, "error");
+        }
+      } catch (err) {
+        showToast("เกิดข้อผิดพลาดในการเชื่อมต่อ", "error");
+      } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+      }
+    }
+  </script>
 </body>
 
 </html>
