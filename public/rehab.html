@@ -184,7 +184,7 @@
                             </div>
 
                             <!-- Form Fields -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div class="space-y-4">
                                 <div class="space-y-2">
                                     <label
                                         class="text-slate-400 text-xs font-bold uppercase tracking-widest ml-1">ชื่อผู้ใช้งาน</label>
@@ -232,6 +232,33 @@
                                             <option value="female">Female</option>
                                             <option value="other">Other</option>
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div class="space-y-2">
+                                    <label
+                                        class="text-slate-400 text-xs font-bold uppercase tracking-widest ml-1">น้ำหนัก
+                                        (kg)</label>
+                                    <div class="relative">
+                                        <span
+                                            class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg">monitor_weight</span>
+                                        <input type="number" id="profileWeight" step="0.1"
+                                            class="w-full pl-12 pr-4 py-3.5 bg-background-dark/50 border border-white/10 rounded-2xl text-white outline-none focus:border-primary/50 transition-all placeholder:text-slate-600"
+                                            placeholder="0.0">
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <label
+                                        class="text-slate-400 text-xs font-bold uppercase tracking-widest ml-1">ส่วนสูง
+                                        (cm)</label>
+                                    <div class="relative">
+                                        <span
+                                            class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg">straighten</span>
+                                        <input type="number" id="profileHeight" step="0.1"
+                                            class="w-full pl-12 pr-4 py-3.5 bg-background-dark/50 border border-white/10 rounded-2xl text-white outline-none focus:border-primary/50 transition-all placeholder:text-slate-600"
+                                            placeholder="0.0">
                                     </div>
                                 </div>
                             </div>

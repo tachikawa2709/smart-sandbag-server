@@ -37,6 +37,8 @@ const UserSchema = new mongoose.Schema({
     avatar: { type: String, default: '' },
     age: { type: Number, default: 0 },
     gender: { type: String, default: '' },
+    weight: { type: Number, default: 0 },
+    height: { type: Number, default: 0 },
     medicalConditions: { type: String, default: '' }
 });
 const User = mongoose.model('User', UserSchema);
@@ -118,7 +120,7 @@ const upload = multer({
 // ================= AUTH =================
 app.post('/register', async (req, res) => {
     try {
-        const { username, email, password, age, gender } = req.body;
+        const { username, email, password, age, gender, weight, height, medicalConditions } = req.body;
         const existingUser = await User.findOne({ $or: [{ username }, { email }] });
         if (existingUser) {
             return res.json({ success: false, message: 'Username หรือ Email นี้มีผู้ใช้งานแล้ว' });
@@ -131,7 +133,10 @@ app.post('/register', async (req, res) => {
             password,
             avatar,
             age: parseInt(age) || 0,
-            gender: gender || ''
+            gender: gender || '',
+            weight: parseFloat(weight) || 0,
+            height: parseFloat(height) || 0,
+            medicalConditions: medicalConditions || ''
         });
         await newUser.save();
         res.json({ success: true, message: 'สมัครสมาชิกสำเร็จ' });
@@ -190,8 +195,10 @@ app.get('/api/user', async (req, res) => {
                 avatar: user.avatar || `https://ui-avatars.com/api/?name=${user.username}&background=random`,
                 age: user.age || 0,
                 gender: user.gender || '',
+                weight: user.weight || 0,
+                height: user.height || 0,
                 medicalConditions: user.medicalConditions || '',
-                password: user.password // Required for the show/hide feature within the secure modal
+                password: user.password
             });
         } else {
             res.status(404).json({ error: "User not found" });

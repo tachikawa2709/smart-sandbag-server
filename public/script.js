@@ -266,6 +266,8 @@ function showProfileModal() {
             document.getElementById('profileEmail').value = user.email;
             document.getElementById('profileAge').value = user.age || "";
             document.getElementById('profileGender').value = user.gender || "male";
+            document.getElementById('profileWeight').value = user.weight || "";
+            document.getElementById('profileHeight').value = user.height || "";
             document.getElementById('profileMedical').value = user.medicalConditions || "";
             document.getElementById('profilePassword').value = user.password || "";
 
@@ -354,6 +356,8 @@ async function saveProfileChanges() {
             email: document.getElementById('profileEmail').value,
             age: document.getElementById('profileAge').value,
             gender: document.getElementById('profileGender').value,
+            weight: document.getElementById('profileWeight').value,
+            height: document.getElementById('profileHeight').value,
             medicalConditions: document.getElementById('profileMedical').value,
             password: document.getElementById('profilePassword').value
         };
