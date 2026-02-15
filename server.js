@@ -31,6 +31,7 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // ================= MODELS =================
 const UserSchema = new mongoose.Schema({
+
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -39,7 +40,9 @@ const UserSchema = new mongoose.Schema({
     gender: { type: String, default: '' },
     weight: { type: Number, default: 0 },
     height: { type: Number, default: 0 },
-    medicalConditions: { type: String, default: '' }
+    medicalConditions: { type: String, default: '' },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date }
 });
 const User = mongoose.model('User', UserSchema);
 
@@ -295,21 +298,87 @@ app.post('/api/user/avatar', async (req, res) => {
 });
 
 // API ลืมรหัสผ่าน (MongoDB Simulation)
+// ================= EMAIL CONFIG =================
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS // App Password (16 characters)
+    }
+});
+
+// ================= AUTH (Forgot Password) =================
 app.post('/forgot-password', async (req, res) => {
     const { email } = req.body;
     try {
         const user = await User.findOne({ email });
-        if (user) {
-            res.json({
-                success: true,
-                message: `ระบบตรวจสอบพบผู้ใช้! รหัสผ่านของคุณคือ: ${user.password}`
-            });
-        } else {
-            res.status(404).json({ success: false, message: "ไม่พบอีเมลนี้ในระบบ" });
+        if (!user) {
+            return res.status(404).json({ success: false, message: "ไม่พบอีเมลนี้ในระบบ" });
         }
+
+        // Generate Token
+        const token = crypto.randomBytes(20).toString('hex');
+
+        // Update User with Token & Expiration (1 Hour)
+        // Note: You need to add these fields to UserSchema if not using strict: false
+        // For simplicity with Mongoose, we can use findByIdAndUpdate with strict: false logic or add fields to schema.
+        // Let's assume we add them to schema or just save them.
+        user.resetPasswordToken = token;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+        await user.save(); // This might fail if 'resetPasswordToken' is not in Schema. We'll fix Schema next.
+
+        const resetUrl = `http://${req.headers.host}/reset-password.html?token=${token}`;
+
+        const mailOptions = {
+            from: `"StrongEase Support" <${process.env.EMAIL_USER}>`,
+            to: user.email,
+            subject: '🔒 Reset Your Password - StrongEase',
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px; background-color: #f8fafc;">
+                    <h2 style="color: #0f172a; text-align: center;">Reset Your Password</h2>
+                    <p style="color: #475569; font-size: 16px;">คุณได้รับอีเมลนี้เนื่องจากมีการร้องขอรีเซ็ตรหัสผ่านสำหรับบัญชีของคุณ</p>
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="${resetUrl}" style="background-color: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">ตั้งรหัสผ่านใหม่</a>
+                    </div>
+                    <p style="color: #475569; font-size: 14px;">หากคุณไม่ได้ร้องขอ กรุณาเพิกเฉยต่ออีเมลฉบับนี้</p>
+                    <p style="color: #94a3b8; font-size: 12px; text-align: center; margin-top: 20px;">ลิงก์นี้จะหมดอายุใน 1 ชั่วโมง</p>
+                </div>
+            `
+        };
+
+        await transporter.sendMail(mailOptions);
+        res.json({ success: true, message: 'ส่งลิงก์รีเซ็ตรหัสผ่านไปยังอีเมลเรียบร้อยแล้ว' });
+
     } catch (err) {
         console.error("❌ Forgot Password Error:", err);
-        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการตรวจสอบอีเมล" });
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการส่งอีเมล" });
+    }
+});
+
+app.post('/reset-password', async (req, res) => {
+    const { token, newPassword } = req.body;
+    try {
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'ลิงก์รีเซ็ตรหัสผ่านไม่ถูกต้องหรือหมดอายุ' });
+        }
+
+        user.password = newPassword;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save();
+
+        res.json({ success: true, message: 'เปลี่ยนรหัสผ่านสำเร็จ! กรุณาเข้าสู่ระบบใหม่' });
+    } catch (err) {
+        console.error("❌ Reset Password Error:", err);
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการเปลี่ยนรหัสผ่าน" });
     }
 });
 
