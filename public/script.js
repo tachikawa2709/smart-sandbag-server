@@ -9,7 +9,7 @@ let isResetting = false;
 
 // Metrics
 let calories = 0;
-let lastCheckedDate = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+let lastCheckedDate = getTodayDateString(); // YYYY-MM-DD
 
 // ---------- WebSocket ----------
 // อัตโนมัติ: ถ้ารันบน Cloud จะใช้ wss:// (Secure) ถ้าแรันที่เครื่องจะใช้ ws://
@@ -139,9 +139,17 @@ function calculateStats() {
     checkDateSwitch();
 }
 
+function getTodayDateString() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 // ระบบเช็คการเปลี่ยนวัน (ข้ามเที่ยงคืน)
 function checkDateSwitch() {
-    const today = new Date().toLocaleDateString('en-CA');
+    const today = getTodayDateString();
     if (today !== lastCheckedDate) {
         console.log("📅 Date changed! Updating current view to:", today);
         lastCheckedDate = today;
@@ -642,11 +650,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 4. Set Date Picker to Today & Load Chart
-    const today = new Date().toLocaleDateString('en-CA');
+    const today = getTodayDateString();
     const dateInput = document.getElementById('datePicker');
     if (dateInput) {
         dateInput.value = today;
-        updateChart();
+        // Small delay to ensure DOM is ready and value is set
+        setTimeout(() => updateChart(), 100);
     }
 
     // 5. Check Date Switch periodically
