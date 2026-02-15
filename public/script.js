@@ -449,42 +449,42 @@ function logout() {
                     showToast("ออกจากระบบแล้ว", "success");
                     setTimeout(() => window.location.reload(), 1000);
                 });
-            console.error("Failed to fetch achievements", err);
         }
-    }
+    });
+}
 
 function updateLevelUI(level, xp) {
-            // 1. Update Badge on Nav Icon
-            const navBadge = document.getElementById('navLevelBadge');
-            if (navBadge) {
-                navBadge.innerText = level;
-                navBadge.classList.remove('hidden');
-            }
+    // 1. Update Badge on Nav Icon
+    const navBadge = document.getElementById('navLevelBadge');
+    if (navBadge) {
+        navBadge.innerText = level;
+        navBadge.classList.remove('hidden');
+    }
 
-            // 2. Update Modal
-            document.getElementById('modalLevel').innerText = level;
-            document.getElementById('currentXp').innerText = `${xp} XP`;
+    // 2. Update Modal
+    document.getElementById('modalLevel').innerText = level;
+    document.getElementById('currentXp').innerText = `${xp} XP`;
 
-            // Calc Progress: Level N starts at (N-1)^2 * 100 XP
-            // XP for next level (N+1) is N^2 * 100
-            // Example: Lvl 1 (0-100), Lvl 2 (100-400), Lvl 3 (400-900)
+    // Calc Progress: Level N starts at (N-1)^2 * 100 XP
+    // XP for next level (N+1) is N^2 * 100
+    // Example: Lvl 1 (0-100), Lvl 2 (100-400), Lvl 3 (400-900)
 
-            const currentLevelBaseXp = Math.pow(level - 1, 2) * 100;
-            const nextLevelBaseXp = Math.pow(level, 2) * 100;
-            const range = nextLevelBaseXp - currentLevelBaseXp;
-            const progress = xp - currentLevelBaseXp;
+    const currentLevelBaseXp = Math.pow(level - 1, 2) * 100;
+    const nextLevelBaseXp = Math.pow(level, 2) * 100;
+    const range = nextLevelBaseXp - currentLevelBaseXp;
+    const progress = xp - currentLevelBaseXp;
 
-            const pct = Math.min(100, Math.max(0, (progress / range) * 100));
+    const pct = Math.min(100, Math.max(0, (progress / range) * 100));
 
-            document.getElementById('nextLevelXp').innerText = `${nextLevelBaseXp} XP`;
-            document.getElementById('xpProgressBar').style.width = `${pct}%`;
-        }
+    document.getElementById('nextLevelXp').innerText = `${nextLevelBaseXp} XP`;
+    document.getElementById('xpProgressBar').style.width = `${pct}%`;
+}
 
 function renderBadges(list) {
-            const grid = document.getElementById('badgesGrid');
-            grid.innerHTML = list.map(badge => {
-                if (badge.unlocked) {
-                    return `
+    const grid = document.getElementById('badgesGrid');
+    grid.innerHTML = list.map(badge => {
+        if (badge.unlocked) {
+            return `
                 <div class="aspect-square rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-yellow-500/30 flex flex-col items-center justify-center p-4 text-center group hover:bg-slate-800 transition-colors relative overflow-hidden">
                     <div class="absolute inset-0 bg-yellow-500/5 group-hover:bg-yellow-500/10 transition-colors"></div>
                     <span class="material-icons text-5xl text-yellow-400 mb-3 drop-shadow-lg">${badge.icon}</span>
@@ -492,187 +492,185 @@ function renderBadges(list) {
                     <p class="text-slate-500 text-[10px]">${badge.description}</p>
                 </div>
             `;
-                } else {
-                    return `
+        } else {
+            return `
                 <div class="aspect-square rounded-2xl bg-slate-800/30 border border-white/5 flex flex-col items-center justify-center p-4 text-center grayscale opacity-60">
                     <span class="material-icons text-4xl text-slate-600 mb-3">${badge.icon}</span>
                     <p class="text-slate-500 font-bold text-sm leading-tight mb-1">???</p>
                     <p class="text-slate-600 text-[10px]">Locked</p>
                 </div>
             `;
-                }
-            }).join('');
         }
+    }).join('');
+}
 
 function showAchievementsModal() {
-            const modal = document.getElementById('achievementsModal');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modal.querySelector('div').classList.remove('scale-95');
-                modal.querySelector('div').classList.add('scale-100');
-            }, 10);
-            fetchAchievements(); // Refresh on open
-        }
+    const modal = document.getElementById('achievementsModal');
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        modal.querySelector('div').classList.remove('scale-95');
+        modal.querySelector('div').classList.add('scale-100');
+    }, 10);
+    fetchAchievements(); // Refresh on open
+}
 
 function closeAchievementsModal() {
-            const modal = document.getElementById('achievementsModal');
-            modal.classList.add('opacity-0');
-            modal.querySelector('div').classList.remove('scale-100');
-            modal.querySelector('div').classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
-        }
+    const modal = document.getElementById('achievementsModal');
+    modal.classList.add('opacity-0');
+    modal.querySelector('div').classList.remove('scale-100');
+    modal.querySelector('div').classList.add('scale-95');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 300);
+}
 
 // ---------- Chart Logic ----------
-let chart; // Declare chart globally
-    let lastCheckedDate; // Declare lastCheckedDate globally
 
-    function updateChart() {
-        const dateInput = document.getElementById('datePicker');
-        const selectedDate = dateInput.value;
-        if (!selectedDate) return;
+function updateChart() {
+    const dateInput = document.getElementById('datePicker');
+    const selectedDate = dateInput.value;
+    if (!selectedDate) return;
 
-        fetch('/results')
-            .then(res => {
-                if (res.status === 401) return [];
-                return res.json();
-            })
-            .then(list => {
-                // แก้ไขจุดนี้: แปลง ISO string จาก Server เป็น Local Date ก่อนเทียบ
-                const filteredList = list.filter(item => {
-                    const itemLocalDate = new Date(item.date).toLocaleDateString('en-CA');
-                    return itemLocalDate === selectedDate;
-                });
+    fetch('/results')
+        .then(res => {
+            if (res.status === 401) return [];
+            return res.json();
+        })
+        .then(list => {
+            // แก้ไขจุดนี้: แปลง ISO string จาก Server เป็น Local Date ก่อนเทียบ
+            const filteredList = list.filter(item => {
+                const itemLocalDate = new Date(item.date).toLocaleDateString('en-CA');
+                return itemLocalDate === selectedDate;
+            });
 
-                let maxRep = 0;
-                if (filteredList.length > 0) {
-                    maxRep = Math.max(...filteredList.map(i => i.rep));
+            let maxRep = 0;
+            if (filteredList.length > 0) {
+                maxRep = Math.max(...filteredList.map(i => i.rep));
+            }
+            document.getElementById('maxRepDisplay').innerText = `${maxRep} ครั้ง`;
+
+            const labels = [];
+            const data = [];
+
+            filteredList.forEach(item => {
+                const timeLabel = new Date(item.date).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+                labels.push(timeLabel);
+                data.push(item.rep);
+            });
+
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = data;
+            chart.update();
+        })
+        .catch(err => console.error('Error loading chart:', err));
+}
+
+// --- Init ---
+document.addEventListener('DOMContentLoaded', () => {
+    gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)');
+    gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Repetitions',
+                data: [],
+                backgroundColor: gradient,
+                borderColor: '#3b82f6',
+                borderWidth: 2,
+                pointBackgroundColor: '#ffffff',
+                pointBorderColor: '#3b82f6',
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#1e293b',
+                    titleColor: '#f8fafc',
+                    bodyColor: '#f8fafc',
+                    padding: 10,
+                    cornerRadius: 8,
+                    displayColors: false
                 }
-                document.getElementById('maxRepDisplay').innerText = `${maxRep} ครั้ง`;
-
-                const labels = [];
-                const data = [];
-
-                filteredList.forEach(item => {
-                    const timeLabel = new Date(item.date).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-                    labels.push(timeLabel);
-                    data.push(item.rep);
-                });
-
-                chart.data.labels = labels;
-                chart.data.datasets[0].data = data;
-                chart.update();
-            })
-            .catch(err => console.error('Error loading chart:', err));
-    }
-
-    // --- Init ---
-    document.addEventListener('DOMContentLoaded', () => {
-        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)');
-        gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
-
-        chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Repetitions',
-                    data: [],
-                    backgroundColor: gradient,
-                    borderColor: '#3b82f6',
-                    borderWidth: 2,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#3b82f6',
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    fill: true,
-                    tension: 0.4
-                }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#1e293b',
-                        titleColor: '#f8fafc',
-                        bodyColor: '#f8fafc',
-                        padding: 10,
-                        cornerRadius: 8,
-                        displayColors: false
-                    }
+            scales: {
+                x: {
+                    grid: { display: false, drawBorder: false },
+                    ticks: { color: '#94a3b8' }
                 },
-                scales: {
-                    x: {
-                        grid: { display: false, drawBorder: false },
-                        ticks: { color: '#94a3b8' }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: '#e2e8f0', borderDash: [5, 5] },
-                        ticks: { color: '#94a3b8', stepSize: 1 }
-                    }
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#e2e8f0', borderDash: [5, 5] },
+                    ticks: { color: '#94a3b8', stepSize: 1 }
                 }
             }
-        });
-
-        updateChart();
-
-        // เช็คการเปลี่ยนวันทุก 1 นาที แม้ไม่ได้เทรน
-        setInterval(checkDateSwitch, 60000);
+        }
     });
 
-    function updateChart() {
-        const dateInput = document.getElementById('datePicker');
-        const selectedDate = dateInput.value;
-        if (!selectedDate) return;
+    updateChart();
 
-        fetch('/results')
-            .then(res => {
-                if (res.status === 401) return [];
-                return res.json();
-            })
-            .then(list => {
-                // แก้ไขจุดนี้: แปลง ISO string จาก Server เป็น Local Date ก่อนเทียบ
-                const filteredList = list.filter(item => {
-                    const itemLocalDate = new Date(item.date).toLocaleDateString('en-CA');
-                    return itemLocalDate === selectedDate;
-                });
+    // เช็คการเปลี่ยนวันทุก 1 นาที แม้ไม่ได้เทรน
+    setInterval(checkDateSwitch, 60000);
+});
 
-                let maxRep = 0;
-                if (filteredList.length > 0) {
-                    maxRep = Math.max(...filteredList.map(i => i.rep));
-                }
-                document.getElementById('maxRepDisplay').innerText = `${maxRep} ครั้ง`;
+function updateChart() {
+    const dateInput = document.getElementById('datePicker');
+    const selectedDate = dateInput.value;
+    if (!selectedDate) return;
 
-                const labels = [];
-                const data = [];
+    fetch('/results')
+        .then(res => {
+            if (res.status === 401) return [];
+            return res.json();
+        })
+        .then(list => {
+            // แก้ไขจุดนี้: แปลง ISO string จาก Server เป็น Local Date ก่อนเทียบ
+            const filteredList = list.filter(item => {
+                const itemLocalDate = new Date(item.date).toLocaleDateString('en-CA');
+                return itemLocalDate === selectedDate;
+            });
 
-                filteredList.forEach(item => {
-                    const timeLabel = new Date(item.date).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-                    labels.push(timeLabel);
-                    data.push(item.rep);
-                });
+            let maxRep = 0;
+            if (filteredList.length > 0) {
+                maxRep = Math.max(...filteredList.map(i => i.rep));
+            }
+            document.getElementById('maxRepDisplay').innerText = `${maxRep} ครั้ง`;
 
-                chart.data.labels = labels;
-                chart.data.datasets[0].data = data;
-                chart.update();
-            })
-            .catch(err => console.error('Error loading chart:', err));
-    }
+            const labels = [];
+            const data = [];
 
-    // ---------- UI Update Main ----------
-    function updateUI() {
-        const timeEl = document.getElementById('timeDisplay');
-        const angleEl = document.getElementById('angleDisplay');
-        const repEl = document.getElementById('repDisplay');
+            filteredList.forEach(item => {
+                const timeLabel = new Date(item.date).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+                labels.push(timeLabel);
+                data.push(item.rep);
+            });
 
-        if (timeEl) timeEl.innerText = formatTime(elapsedTime);
-        if (angleEl) angleEl.innerText = angle.toFixed(2) + "°";
-        if (repEl) repEl.innerText = rep;
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = data;
+            chart.update();
+        })
+        .catch(err => console.error('Error loading chart:', err));
+}
 
-        calculateStats();
-    }
+// ---------- UI Update Main ----------
+function updateUI() {
+    const timeEl = document.getElementById('timeDisplay');
+    const angleEl = document.getElementById('angleDisplay');
+    const repEl = document.getElementById('repDisplay');
+
+    if (timeEl) timeEl.innerText = formatTime(elapsedTime);
+    if (angleEl) angleEl.innerText = angle.toFixed(2) + "°";
+    if (repEl) repEl.innerText = rep;
+
+    calculateStats();
+}
