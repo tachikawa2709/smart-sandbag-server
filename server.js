@@ -42,7 +42,14 @@ const UserSchema = new mongoose.Schema({
     height: { type: Number, default: 0 },
     medicalConditions: { type: String, default: '' },
     resetPasswordToken: { type: String },
-    resetPasswordExpires: { type: Date }
+    resetPasswordExpires: { type: Date },
+    // Gamification
+    xp: { type: Number, default: 0 },
+    level: { type: Number, default: 1 },
+    achievements: { type: [String], default: [] }, // IDs of unlocked achievements
+    streak: { type: Number, default: 0 },
+    lastActiveDate: { type: Date },
+    bestSessionRep: { type: Number, default: 0 }
 });
 const User = mongoose.model('User', UserSchema);
 
@@ -383,6 +390,23 @@ app.post('/reset-password', async (req, res) => {
 });
 
 // ================= API =================
+// ================= GAMIFICATION CONSTANTS =================
+const ACHIEVEMENTS_LIST = [
+    // Tiers
+    { id: 'tier_beginner', name: 'มือใหม่สายดึง', description: 'Beginner Tier: 15 Reps/Session, 3 Days Streak, 100 Total Reps', icon: 'military_tech', color: 'text-orange-400' }, // Bronze
+    { id: 'tier_intermediate', name: 'นักฝึกสายอึด', description: 'Intermediate Tier: 30 Reps/Session, 3 Sets/Day, 500 Total Reps', icon: 'military_tech', color: 'text-slate-400' }, // Silver
+    { id: 'tier_advanced', name: 'Resistance Master', description: 'Advanced Tier: 50 Reps/Session, 7 Days Streak, 1000 Total Reps', icon: 'military_tech', color: 'text-yellow-400' }, // Gold
+
+    // Daily & Streak
+    { id: 'iron_streak', name: 'Iron Streak', description: 'ออกกำลังกายต่อเนื่อง 5 วัน', icon: 'local_fire_department', color: 'text-orange-500' },
+    { id: 'consistency_hero', name: 'Consistency Hero', description: 'ออกกำลังกายต่อเนื่อง 30 วัน', icon: 'verified', color: 'text-blue-500' },
+    { id: 'daily_grind', name: 'Daily Grid', description: 'ทำครบ 20 Reps ในวันเดียว', icon: 'today', color: 'text-green-500' },
+
+    // Misc
+    { id: 'first_blood', name: 'ก้าวแรกสู่สังเวียน', description: 'บันทึกการฝึกครั้งแรก', icon: 'emoji_events', color: 'text-yellow-500' },
+    { id: 'century_club', name: 'นักยก 100 ครั้ง', description: 'ยกครบ 100 ครั้งรวม', icon: 'fitness_center', color: 'text-blue-400' }
+];
+
 app.post('/save', async (req, res) => {
     if (!req.session.userId) return res.status(401).end();
 
@@ -390,17 +414,132 @@ app.post('/save', async (req, res) => {
         const user = await User.findById(req.session.userId);
         if (!user) return res.status(404).end();
 
+        const currentRep = req.body.rep;
+        const currentTime = req.body.time;
+
+        // 1. Save Result
         const newResult = new Result({
             username: user.username,
-            time: req.body.time,
-            rep: req.body.rep
+            time: currentTime,
+            rep: currentRep
         });
         await newResult.save();
-        res.json({ success: true });
+
+        // 2. Gamification: Stats Update
+        const xpGained = currentRep * 10;
+        user.xp = (user.xp || 0) + xpGained;
+
+        // Level Calc
+        const oldLevel = user.level || 1;
+        const newLevel = Math.floor(Math.sqrt(user.xp / 100)) + 1;
+        let levelUp = false;
+        if (newLevel > oldLevel) {
+            user.level = newLevel;
+            levelUp = true;
+        }
+
+        // Streak Logic
+        const now = new Date();
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const lastActive = user.lastActiveDate ? new Date(user.lastActiveDate) : null;
+
+        let streak = user.streak || 0;
+
+        if (lastActive) {
+            const lastActiveStart = new Date(lastActive.getFullYear(), lastActive.getMonth(), lastActive.getDate());
+            const diffTime = todayStart - lastActiveStart;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 1) {
+                // Consecutive day
+                streak++;
+            } else if (diffDays > 1) {
+                // Break in streak
+                streak = 1;
+            }
+            // If diffDays === 0 (Same day), keep streak
+        } else {
+            streak = 1;
+        }
+        user.streak = streak;
+        user.lastActiveDate = now;
+
+        // Best Session Rep
+        if (currentRep > (user.bestSessionRep || 0)) {
+            user.bestSessionRep = currentRep;
+        }
+
+        // 3. Check Achievements
+        const unlockedIds = [];
+
+        // Fetch Aggregated Stats
+        const allResults = await Result.find({ username: user.username });
+        const totalReps = allResults.reduce((sum, r) => sum + r.rep, 0);
+
+        // Daily Stats
+        const todayResults = allResults.filter(r => r.date >= todayStart);
+        const repsToday = todayResults.reduce((sum, r) => sum + r.rep, 0);
+        const sessionsToday = todayResults.length; // Approximate "Sets"
+
+        function checkUnlock(id) {
+            if (!user.achievements.includes(id)) {
+                user.achievements.push(id);
+                unlockedIds.push(ACHIEVEMENTS_LIST.find(a => a.id === id));
+            }
+        }
+
+        // --- Conditions ---
+
+        // Basic
+        if (totalReps >= 1) checkUnlock('first_blood');
+        if (totalReps >= 100) checkUnlock('century_club');
+
+        // Streaks
+        if (streak >= 5) checkUnlock('iron_streak');
+        if (streak >= 30) checkUnlock('consistency_hero');
+
+        // Daily
+        if (repsToday >= 20) checkUnlock('daily_grind');
+
+        // Tiers
+        // Beginner: 15 Reps/Session (Best), 3 Days Streak, 100 Total Reps
+        if (user.bestSessionRep >= 15 && streak >= 3 && totalReps >= 100) checkUnlock('tier_beginner');
+
+        // Intermediate: 30 Reps/Session, 3 Sets/Day (Sessions Today), 500 Total Reps
+        if (user.bestSessionRep >= 30 && sessionsToday >= 3 && totalReps >= 500) checkUnlock('tier_intermediate');
+
+        // Advanced: 50 Reps/Session, 7 Days Streak, 1000 Total Reps
+        if (user.bestSessionRep >= 50 && streak >= 7 && totalReps >= 1000) checkUnlock('tier_advanced');
+
+        await user.save();
+
+        res.json({
+            success: true,
+            xpGained,
+            newLevel,
+            levelUp,
+            newAchievements: unlockedIds
+        });
+
     } catch (err) {
         console.error("❌ Save Result Error:", err);
         res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการบันทึกผล" });
     }
+});
+
+// GET Achievement List (Static + User Progress)
+app.get('/api/achievements', async (req, res) => {
+    if (!req.session.userId) return res.status(401).json({ success: false });
+    const user = await User.findById(req.session.userId);
+    if (!user) return res.status(404).json({ success: false });
+
+    // Mark which ones are unlocked
+    const payload = ACHIEVEMENTS_LIST.map(ach => ({
+        ...ach,
+        unlocked: user.achievements.includes(ach.id)
+    }));
+
+    res.json({ success: true, achievements: payload, userXp: user.xp, userLevel: user.level });
 });
 
 app.get('/results', async (req, res) => {
