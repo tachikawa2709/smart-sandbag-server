@@ -71,11 +71,11 @@ app.use(session({
     store: MongoStore.create({
         mongoUrl: process.env.MONGODB_URI,
         collectionName: 'sessions',
-        ttl: 14 * 24 * 60 * 60 // 14 days
+        ttl: 30 * 24 * 60 * 60 // 30 days
     }),
     cookie: {
         secure: process.env.NODE_ENV === 'production', // true if on HTTPS
-        maxAge: 1000 * 60 * 60 * 24 * 14 // 14 days
+        maxAge: 1000 * 60 * 60 * 24 * 1 // Default 1 day (or session-only if maxAge is not set, but here we set a base)
     }
 }));
 
@@ -143,20 +143,30 @@ app.post('/register', async (req, res) => {
 
 app.post('/login', async (req, res) => {
     try {
-        const { login, password } = req.body;
+        const { login, password, rememberMe } = req.body;
         const user = await User.findOne({
             $or: [{ username: login }, { email: login }],
             password: password
         });
 
         if (user) {
-            req.session.userId = user._id; // เก็บแค่ ID
-            res.json({ success: true });
+            req.session.userId = user._id;
+            req.session.username = user.username;
+
+            // ถ้าเลือก Remember Me ให้ขยายเวลา Cookie เป็น 30 วัน
+            if (rememberMe) {
+                req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;
+            } else {
+                req.session.cookie.expires = false; // Session-only (หายเมื่อปิดเบราว์เซอร์)
+            }
+
+            res.json({ success: true, message: 'เข้าสู่ระบบสำเร็จ' });
         } else {
-            res.json({ success: false, message: "Username หรือ รหัสผ่านไม่ถูกต้อง" });
+            res.json({ success: false, message: 'Username หรือ รหัสผ่านไม่ถูกต้อง' });
         }
     } catch (err) {
-        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ" });
+        console.error("❌ Login Error:", err);
+        res.status(500).json({ success: false, message: 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ' });
     }
 });
 

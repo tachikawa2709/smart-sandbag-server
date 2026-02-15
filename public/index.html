@@ -146,11 +146,12 @@
 
     const login = document.getElementById('loginInput').value;
     const password = document.getElementById('password').value;
+    const rememberMe = document.getElementById('remember').checked;
 
     const res = await fetch('/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ login, password })
+      body: JSON.stringify({ login, password, rememberMe })
     });
 
     const data = await res.json();
