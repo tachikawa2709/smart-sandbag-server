@@ -289,7 +289,7 @@ function showProfileModal() {
     if (!modal) return;
 
     // Fetch latest user data
-    fetch('/api/user')
+    fetch(`/api/user?t=${Date.now()}`)
         .then(res => res.json())
         .then(user => {
             document.getElementById('profileModalAvatar').src = user.avatar;
@@ -420,7 +420,7 @@ async function saveProfileChanges() {
 }
 
 function checkLoginStatus() {
-    fetch('/api/user')
+    fetch(`/api/user?t=${Date.now()}`)
         .then(res => {
             if (res.ok) return res.json();
             throw new Error('Not logged in');
@@ -452,6 +452,19 @@ function logout() {
                 });
         }
     });
+}
+
+async function fetchAchievements() {
+    try {
+        const res = await fetch(`/api/achievements?t=${Date.now()}`);
+        const data = await res.json();
+        if (data.success) {
+            updateLevelUI(data.userLevel, data.userXp);
+            renderBadges(data.achievements);
+        }
+    } catch (err) {
+        console.error("Failed to fetch achievements", err);
+    }
 }
 
 function updateLevelUI(level, xp) {
@@ -495,9 +508,9 @@ function renderBadges(list) {
             `;
         } else {
             return `
-                <div class="aspect-square rounded-2xl bg-slate-800/40 border border-white/5 flex flex-col items-center justify-center p-4 text-center relative">
-                    <div class="absolute top-2 right-2 text-slate-600"><span class="material-icons text-sm">lock</span></div>
-                    <span class="material-icons text-4xl text-slate-600 mb-3 grayscale opacity-50">${badge.icon}</span>
+                <div class="aspect-square rounded-2xl bg-slate-800/40 border border-white/5 flex flex-col items-center justify-center p-4 text-center relative pointer-events-none select-none">
+                    <div class="absolute top-2 right-2 text-slate-500"><span class="material-icons text-sm">lock</span></div>
+                    <span class="material-icons text-4xl text-slate-700 mb-3 grayscale">${badge.icon}</span>
                     <p class="text-slate-400 font-bold text-sm leading-tight mb-1">${badge.name}</p>
                     <p class="text-slate-600 text-[10px] line-clamp-2">${badge.description}</p>
                 </div>
@@ -534,7 +547,7 @@ function updateChart() {
     const selectedDate = dateInput.value;
     if (!selectedDate) return;
 
-    fetch('/results')
+    fetch(`/results?t=${Date.now()}`)
         .then(res => {
             if (res.status === 401) return [];
             return res.json();
