@@ -104,7 +104,7 @@
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="age">Age</label>
+              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="age">อายุ</label>
               <div class="relative">
                 <span
                   class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">calendar_today</span>
@@ -115,16 +115,16 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5"
-                for="gender">Gender</label>
+                for="gender">เพศ</label>
               <div class="relative">
                 <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">wc</span>
                 <select
                   class="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all appearance-none"
                   id="gender">
-                  <option value="" disabled selected>Select</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
+                  <option value="" disabled selected>เลือก</option>
+                  <option value="male">ชาย</option>
+                  <option value="female">หญิง</option>
+                  <option value="other">อื่นๆ</option>
                 </select>
               </div>
             </div>
@@ -133,8 +133,8 @@
           <!-- Weight & Height Grid -->
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="weight">Weight
-                (kg)</label>
+              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="weight">น้ำหนัก
+                (กก.)</label>
               <div class="relative">
                 <span
                   class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">monitor_weight</span>
@@ -144,8 +144,8 @@
               </div>
             </div>
             <div>
-              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="height">Height
-                (cm)</label>
+              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="height">ส่วนสูง
+                (ซม.)</label>
               <div class="relative">
                 <span
                   class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">straighten</span>
@@ -157,14 +157,14 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="medical">Medical
-              Conditions</label>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5"
+              for="medical">โรคประจำตัว</label>
             <div class="relative">
               <span
                 class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">medical_services</span>
               <input
                 class="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-slate-400"
-                id="medical" placeholder="Any medical conditions? (Optional)" type="text" />
+                id="medical" placeholder="มีโรคประจำตัวหรือไม่? (ไม่บังคับ)" type="text" />
             </div>
           </div>
           <div>
@@ -291,16 +291,16 @@
 
         if (data.success) {
           showResultModal({
-            title: "Registration Successful!",
-            message: "Your account has been created. See you at login!",
+            title: "สมัครสมาชิกสำเร็จ!",
+            message: "บัญชีของคุณถูกสร้างเรียบร้อยแล้ว พบกันที่หน้าเข้าสู่ระบบ!",
             type: "success",
             duration: 2000,
             onAction: () => { window.location.href = "/index.html"; }
           });
         } else {
           showResultModal({
-            title: "Registration Failed",
-            message: data.message || "Please check your information.",
+            title: "การสมัครสมาชิกไม่สำเร็จ",
+            message: data.message || "โปรดตรวจสอบข้อมูลของคุณ",
             type: "error",
             duration: 3000
           });
